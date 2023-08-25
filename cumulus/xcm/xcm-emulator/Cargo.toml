@@ -4,6 +4,7 @@ description = "Test kit to emulate XCM program execution."
 version = "0.1.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2021"
+publish = false
 
 [dependencies]
 codec = { package = "parity-scale-codec", version = "3.0.0" }
