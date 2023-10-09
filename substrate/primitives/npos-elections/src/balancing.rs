@@ -74,7 +74,7 @@ pub fn balance<AccountId: IdentifierT>(
 		}
 
 		iter += 1;
-		if max_diff <= config.tolerance || iter >= config.iterations {
+		if dbg!(max_diff) <= config.tolerance || iter >= config.iterations {
 			break iter
 		}
 	}
