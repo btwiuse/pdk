@@ -8,7 +8,7 @@ use node_template_runtime as runtime;
 use runtime::{AccountId, Balance, BalancesCall, SystemCall};
 use sc_cli::Result;
 use sc_client_api::BlockBackend;
-use sp_core::{Encode, Pair};
+use sp_core::{Encode, Pair, ecdsa};
 use sp_inherents::{InherentData, InherentDataProvider};
 use sp_keyring::Sr25519Keyring;
 use sp_runtime::{OpaqueExtrinsic, SaturatedConversion};
@@ -39,6 +39,7 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for RemarkBuilder {
 	}
 
 	fn build(&self, nonce: u32) -> std::result::Result<OpaqueExtrinsic, &'static str> {
+		/*
 		let acc = Sr25519Keyring::Bob.pair();
 		let extrinsic: OpaqueExtrinsic = create_benchmark_extrinsic(
 			self.client.as_ref(),
@@ -49,6 +50,8 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for RemarkBuilder {
 		.into();
 
 		Ok(extrinsic)
+		 */
+		Err("wtf")
 	}
 }
 
@@ -78,6 +81,7 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for TransferKeepAliveBuilder {
 	}
 
 	fn build(&self, nonce: u32) -> std::result::Result<OpaqueExtrinsic, &'static str> {
+		/*
 		let acc = Sr25519Keyring::Bob.pair();
 		let extrinsic: OpaqueExtrinsic = create_benchmark_extrinsic(
 			self.client.as_ref(),
@@ -89,15 +93,18 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for TransferKeepAliveBuilder {
 		.into();
 
 		Ok(extrinsic)
+		 */
+		Err("wtf")
 	}
 }
 
 /// Create a transaction using the given `call`.
 ///
 /// Note: Should only be used for benchmarking.
+/*
 pub fn create_benchmark_extrinsic(
 	client: &FullClient,
-	sender: sp_core::sr25519::Pair,
+	sender: sp_core::ecdsa::Pair,
 	call: runtime::RuntimeCall,
 	nonce: u32,
 ) -> runtime::UncheckedExtrinsic {
@@ -137,15 +144,16 @@ pub fn create_benchmark_extrinsic(
 			(),
 		),
 	);
-	let signature = raw_payload.using_encoded(|e| sender.sign(e));
+	let signature = ecdsa::Signature(raw_payload.using_encoded(|e| sender.sign(e)).0);
 
 	runtime::UncheckedExtrinsic::new_signed(
 		call,
-		sp_runtime::AccountId32::from(sender.public()).into(),
-		runtime::Signature::Sr25519(signature),
+		AccountId::from(sender.public()).into(),
+		signature.into(), // runtime::Signature::Sr25519(signature),
 		extra,
 	)
 }
+ */
 
 /// Generates inherent data for the `benchmark overhead` command.
 ///

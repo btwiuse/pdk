@@ -40,6 +40,15 @@ sp-storage = { path = "../../../primitives/storage", default-features = false}
 sp-transaction-pool = { path = "../../../primitives/transaction-pool", default-features = false}
 sp-version = { path = "../../../primitives/version", default-features = false}
 sp-genesis-builder = { default-features = false, path = "../../../primitives/genesis-builder" }
+sp-io = { path = "../../../primitives/io" }
+serde = { version = "1.0.101", default-features = false }
+sha3 = { version = "0.10", default-features = false }
+hex = { version = "0.4.3", default-features = false }
+hex-literal = { version = "0.3.4" }
+impl-serde = { version = "0.3.1", default-features = false }
+libsecp256k1 = { version = "0.7", default-features = false }
+log = { version = "0.4", default-features = false }
+fp-self-contained = { path = "../self-contained", features = ["serde"] }
 
 # Used for the node template's RPCs
 frame-system-rpc-runtime-api = { path = "../../../frame/system/rpc/runtime-api", default-features = false}

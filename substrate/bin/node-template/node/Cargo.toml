@@ -19,6 +19,8 @@ name = "node-template"
 [dependencies]
 clap = { version = "4.4.6", features = ["derive"] }
 futures = { version = "0.3.21", features = ["thread-pool"]}
+libsecp256k1 = { version = "0.7", default-features = false }
+array-bytes = { version = "6.1" }
 
 sc-cli = { path = "../../../client/cli" }
 sp-core = { path = "../../../primitives/core" }

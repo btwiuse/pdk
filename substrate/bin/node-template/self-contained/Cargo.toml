@@ -1,0 +1,44 @@
+[package]
+name = "fp-self-contained"
+version = "1.0.0-dev"
+license = "Apache-2.0"
+description = "Primitive Ethereum abstractions for Substrate."
+authors = { workspace = true }
+edition = { workspace = true }
+repository = { workspace = true }
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+#scale-codec = { package = "parity-scale-codec", workspace = true }
+#scale-info = { workspace = true }
+#serde = { workspace = true, optional = true }
+scale-codec = { package = "parity-scale-codec", version = "3.6.1", default-features = false, features = ["derive"] }
+scale-info = { version = "2.10.0", default-features = false, features = ["derive"] }
+serde = { version = "1.0.101", default-features = false }
+
+# Substrate
+#frame-support = { workspace = true }
+#sp-runtime = { workspace = true }
+frame-support = { path = "../../../frame/support", default-features = false}
+sp-runtime = { path = "../../../primitives/runtime", default-features = false}
+
+[features]
+default = ["std"]
+std = [
+	"scale-codec/std",
+	"scale-info/std",
+	"serde/std",
+	# Substrate
+	"frame-support/std",
+	"sp-runtime/std",
+]
+serde = [
+	# "dep:serde",
+	"scale-info/serde",
+	"sp-runtime/serde",
+]
+try-runtime = [
+	"sp-runtime/try-runtime",
+]
