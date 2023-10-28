@@ -48,6 +48,13 @@ sp-transaction-pool = { path = "../../../primitives/transaction-pool", default-f
 sp-statement-store = { path = "../../../primitives/statement-store", default-features = false}
 sp-version = { path = "../../../primitives/version", default-features = false}
 sp-io = { path = "../../../primitives/io", default-features = false}
+serde = { version = "1.0.101", default-features = false }
+sha3 = { version = "0.10", default-features = false }
+hex = { version = "0.4.3", default-features = false }
+hex-literal = { version = "0.3.4" }
+impl-serde = { version = "0.3.1", default-features = false }
+libsecp256k1 = { version = "0.7", default-features = false }
+self-contained = { path = "../self-contained", features = ["serde"] }
 
 # frame dependencies
 frame-executive = { path = "../../../frame/executive", default-features = false}
