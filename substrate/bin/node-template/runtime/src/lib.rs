@@ -255,6 +255,17 @@ impl pallet_template::Config for Runtime {
 	type WeightInfo = pallet_template::weights::SubstrateWeight<Runtime>;
 }
 
+parameter_types! {
+	pub const ProofSizeLimit: u32 = 4096;
+}
+
+/// Configure the pallet-poe in pallets/template.
+impl pallet_poe::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type WeightInfo = pallet_poe::weights::SubstrateWeight<Runtime>;
+	type ProofSizeLimit = ProofSizeLimit;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime {
@@ -267,6 +278,7 @@ construct_runtime!(
 		Sudo: pallet_sudo,
 		// Include the custom logic from the pallet-template in the runtime.
 		TemplateModule: pallet_template,
+		Poe: pallet_poe,
 	}
 );
 
