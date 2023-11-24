@@ -219,6 +219,7 @@ members = [
 	"substrate/bin/minimal/runtime",
 	"substrate/bin/node-template/node",
 	"substrate/bin/node-template/pallets/template",
+	"substrate/bin/node-template/pallets/poe",
 	"substrate/bin/node-template/runtime",
 	"substrate/bin/node/bench",
 	"substrate/bin/node/cli",
