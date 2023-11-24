@@ -84,6 +84,9 @@ pub mod pallet {
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 		/// A type representing the weights required by the dispatchables of this pallet.
 		type WeightInfo: WeightInfo;
+		/// The maximum number of proofs that can exist in the system.
+		#[pallet::constant]
+		type ProofSizeLimit: Get<u32>;
 	}
 
 	/// A storage item for this pallet.
@@ -94,6 +97,15 @@ pub mod pallet {
 	#[pallet::storage]
 	#[pallet::getter(fn something)]
 	pub type Something<T> = StorageValue<_, u32>;
+
+	/// A storage item for this pallet.
+	///
+	/// In this template, we are declaring a storage item called `Proofs` that stores the proof
+	/// of existence of a file. The key is the hash of the file and the value is a tuple of the
+	/// account that made the claim and the block number at which the claim was made.
+	#[pallet::storage]
+	#[pallet::getter(fn proofs)]
+	pub type Proofs<T: Config> = StorageMap<_, Blake2_128Concat, BoundedVec<u8, T::ProofSizeLimit>, (T::AccountId, BlockNumberFor<T>)>;
 
 	/// Events that functions in this pallet can emit.
 	///
