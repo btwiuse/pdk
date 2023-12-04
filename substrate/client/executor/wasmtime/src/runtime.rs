@@ -245,8 +245,8 @@ fn common_config(semantics: &Semantics) -> std::result::Result<wasmtime::Config,
 
 	// Since wasmtime 6.0.0 the default for this is `true`, but that heavily regresses
 	// the contracts pallet's performance, so disable it for now.
-	#[allow(deprecated)]
-	config.cranelift_use_egraphs(false);
+	// #[allow(deprecated)]
+	// config.cranelift_use_egraphs(false);
 
 	let profiler = match std::env::var_os("WASMTIME_PROFILING_STRATEGY") {
 		Some(os_string) if os_string == "jitdump" => wasmtime::ProfilingStrategy::JitDump,
@@ -322,15 +322,15 @@ fn common_config(semantics: &Semantics) -> std::result::Result<wasmtime::Config,
 			//   size: 32384
 			//   table_elements: 1249
 			//   memory_pages: 2070
-			.instance_size(128 * 1024)
-			.instance_table_elements(8192)
-			.instance_memory_pages(memory_pages)
+			.max_core_instance_size(128 * 1024)
+			.table_elements(8192)
+			.memory_pages(memory_pages)
 			// We can only have a single of those.
-			.instance_tables(1)
-			.instance_memories(1)
+			.total_tables(1)
+			.total_memories(1);
 			// This determines how many instances of the module can be
 			// instantiated in parallel from the same `Module`.
-			.instance_count(MAX_INSTANCE_COUNT);
+			// .instance_count(MAX_INSTANCE_COUNT);
 
 		dbg!(&pooling_config);
 		config.allocation_strategy(wasmtime::InstanceAllocationStrategy::Pooling(pooling_config));
