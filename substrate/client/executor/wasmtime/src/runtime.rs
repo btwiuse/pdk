@@ -328,10 +328,10 @@ fn common_config(semantics: &Semantics) -> std::result::Result<wasmtime::Config,
 			.memory_pages(memory_pages)
 			// We can only have a single of those.
 			.total_tables(1)
-			.total_memories(1);
+			.total_memories(1)
 			// This determines how many instances of the module can be
 			// instantiated in parallel from the same `Module`.
-			// .instance_count(MAX_INSTANCE_COUNT);
+			.total_core_instances(MAX_INSTANCE_COUNT);
 
 		dbg!(&pooling_config);
 		config.allocation_strategy(wasmtime::InstanceAllocationStrategy::Pooling(pooling_config));
