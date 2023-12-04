@@ -595,6 +595,7 @@ where
         dbg!(&wasmtime_config);
 	let engine = Engine::new(&wasmtime_config)
 		.map_err(|e| WasmError::Other(format!("cannot create the wasmtime engine: {:#}", e)))?;
+        dbg!("woof");
 
 	let (module, instantiation_strategy) = match code_supply_mode {
 		CodeSupplyMode::Fresh(blob) => {
