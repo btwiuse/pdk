@@ -315,23 +315,15 @@ fn common_config(semantics: &Semantics) -> std::result::Result<wasmtime::Config,
 
 		let mut pooling_config = wasmtime::PoolingAllocationConfig::default();
 		pooling_config
-			.max_unused_warm_slots(4)
-			// Pooling needs a bunch of hard limits to be set; if we go over
-			// any of these then the instantiation will fail.
-			//
-			// Current minimum values for kusama (as of 2022-04-14):
-			//   size: 32384
-			//   table_elements: 1249
-			//   memory_pages: 2070
-			.max_core_instance_size(128 * 1024)
-			.table_elements(8192)
-			.memory_pages(memory_pages)
-			// We can only have a single of those.
-			.total_tables(1)
-			.total_memories(1)
-			// This determines how many instances of the module can be
-			// instantiated in parallel from the same `Module`.
-			.total_core_instances(MAX_INSTANCE_COUNT);
+                      .max_unused_warm_slots(4)
+                      .total_core_instances(64)
+                      .total_memories(64)
+                      .max_memories_per_module(1)
+                      .total_tables(64)
+                      .max_tables_per_module(1)
+                      .max_component_instance_size(128*1024)
+                      .table_elements(8192)
+                      .memory_pages(memory_pages);
 
 		dbg!(&pooling_config);
 		config.allocation_strategy(wasmtime::InstanceAllocationStrategy::Pooling(pooling_config));
