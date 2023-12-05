@@ -323,7 +323,10 @@ fn common_config(semantics: &Semantics) -> std::result::Result<wasmtime::Config,
                       .max_tables_per_module(1)
                       .max_component_instance_size(128*1024)
                       .table_elements(8192)
-                      .memory_pages(memory_pages);
+                      .memory_pages(memory_pages)
+                      .max_memories_per_component(65536)
+                      .max_core_instances_per_component(65536)
+                      .max_tables_per_component(65536);
 
 		dbg!(&pooling_config);
 		config.allocation_strategy(wasmtime::InstanceAllocationStrategy::Pooling(pooling_config));
