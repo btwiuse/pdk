@@ -288,6 +288,13 @@ fn common_config(semantics: &Semantics) -> std::result::Result<wasmtime::Config,
 	config.wasm_threads(false);
 	config.wasm_memory64(false);
 
+        // Workaround for the wasmtime + pooling issue on linux/aarch64
+        // See https://github.com/bytecodealliance/wasmtime/issues/7637
+        config.static_memory_maximum_size(0);
+        config.dynamic_memory_reserved_for_growth(0);
+        config.static_memory_guard_size(0);
+        config.dynamic_memory_guard_size(0);
+
 	let (use_pooling, use_cow) = match semantics.instantiation_strategy {
 		InstantiationStrategy::PoolingCopyOnWrite => (true, true),
 		InstantiationStrategy::Pooling => (true, false),
