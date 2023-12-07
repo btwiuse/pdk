@@ -106,7 +106,7 @@ pub struct NetworkParams {
 	///
 	/// By default, the network will use mDNS to discover other nodes on the
 	/// local network. This disables it. Automatically implied when using --dev.
-	#[arg(long)]
+	#[arg(long, default_value_t = true)]
 	pub no_mdns: bool,
 
 	/// Maximum number of peers from which to ask for the same blocks in parallel.
