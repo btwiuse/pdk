@@ -43,7 +43,7 @@ pub enum WasmtimeInstantiationStrategy {
 
 /// The default [`WasmtimeInstantiationStrategy`].
 pub const DEFAULT_WASMTIME_INSTANTIATION_STRATEGY: WasmtimeInstantiationStrategy =
-	WasmtimeInstantiationStrategy::PoolingCopyOnWrite;
+	WasmtimeInstantiationStrategy::RecreateInstanceCopyOnWrite;
 
 /// How to execute Wasm runtime code.
 #[derive(Debug, Clone, Copy, ValueEnum)]
