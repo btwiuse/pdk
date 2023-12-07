@@ -148,7 +148,7 @@ serial_test = "2.0.0"
 tempfile = "3.2"
 
 [features]
-default = ["db", "full-node"]
+default = [ "full-node" ]
 
 db = [ "service/rocksdb", "sc-client-db/rocksdb", "frame-benchmarking-cli/rocksdb", "kvdb-rocksdb" ]
 

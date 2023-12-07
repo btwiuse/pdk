@@ -44,7 +44,7 @@ sc-storage-monitor = { path = "../../substrate/client/storage-monitor" }
 substrate-build-script-utils = { path = "../../substrate/utils/build-script-utils" }
 
 [features]
-default = [ "cli", "db", "full-node" ]
+default = [ "cli", "full-node" ]
 db = [
 	"sc-cli?/rocksdb",
 	"sc-service?/rocksdb",
