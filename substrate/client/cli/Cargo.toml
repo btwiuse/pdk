@@ -54,5 +54,5 @@ futures-timer = "3.0.1"
 sp-tracing = { path = "../../primitives/tracing" }
 
 [features]
-default = ["rocksdb"]
+default = []
 rocksdb = ["sc-client-db/rocksdb"]
