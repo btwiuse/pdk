@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+cargo zigbuild -r -p polkadot --target $(uname -m)-unknown-linux-musl
+file ./target/$(uname -m)-unknown-linux-musl/release/polkadot*
