@@ -38,7 +38,6 @@ use bandersnatch_vrfs::SecretKey;
 use codec::{Decode, Encode, EncodeLike, MaxEncodedLen};
 use scale_info::TypeInfo;
 
-use sp_runtime_interface::pass_by::PassByInner;
 use sp_std::{vec, vec::Vec};
 
 /// Identifier used to match public keys against bandersnatch-vrf keys.
@@ -66,7 +65,6 @@ const PREOUT_SERIALIZED_SIZE: usize = 33;
 	Ord,
 	Encode,
 	Decode,
-	PassByInner,
 	MaxEncodedLen,
 	TypeInfo,
 )]
@@ -155,7 +153,7 @@ impl<'de> Deserialize<'de> for Public {
 /// The signature is created via the [`VrfSecret::vrf_sign`] using [`SIGNING_CTX`] as transcript
 /// `label`.
 #[cfg_attr(feature = "full_crypto", derive(Hash))]
-#[derive(Clone, Copy, PartialEq, Eq, Encode, Decode, PassByInner, MaxEncodedLen, TypeInfo)]
+#[derive(Clone, Copy, PartialEq, Eq, Encode, Decode, MaxEncodedLen, TypeInfo)]
 pub struct Signature([u8; SIGNATURE_SERIALIZED_SIZE]);
 
 impl UncheckedFrom<[u8; SIGNATURE_SERIALIZED_SIZE]> for Signature {

@@ -113,49 +113,6 @@ impl UintAuthorityId {
 	}
 }
 
-impl sp_application_crypto::RuntimeAppPublic for UintAuthorityId {
-	const ID: KeyTypeId = key_types::DUMMY;
-
-	type Signature = TestSignature;
-
-	fn all() -> Vec<Self> {
-		ALL_KEYS.with(|l| l.borrow().clone())
-	}
-
-	fn generate_pair(_: Option<Vec<u8>>) -> Self {
-		use rand::RngCore;
-		UintAuthorityId(rand::thread_rng().next_u64())
-	}
-
-	fn sign<M: AsRef<[u8]>>(&self, msg: &M) -> Option<Self::Signature> {
-		Some(TestSignature(self.0, msg.as_ref().to_vec()))
-	}
-
-	fn verify<M: AsRef<[u8]>>(&self, msg: &M, signature: &Self::Signature) -> bool {
-		traits::Verify::verify(signature, msg.as_ref(), &self.0)
-	}
-
-	fn to_raw_vec(&self) -> Vec<u8> {
-		AsRef::<[u8]>::as_ref(self).to_vec()
-	}
-}
-
-impl OpaqueKeys for UintAuthorityId {
-	type KeyTypeIdProviders = ();
-
-	fn key_ids() -> &'static [KeyTypeId] {
-		&[key_types::DUMMY]
-	}
-
-	fn get_raw(&self, _: KeyTypeId) -> &[u8] {
-		self.as_ref()
-	}
-
-	fn get<T: Decode>(&self, _: KeyTypeId) -> Option<T> {
-		self.using_encoded(|mut x| T::decode(&mut x)).ok()
-	}
-}
-
 impl traits::IdentifyAccount for UintAuthorityId {
 	type AccountId = u64;
 

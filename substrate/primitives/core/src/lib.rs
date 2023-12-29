@@ -38,7 +38,6 @@ use scale_info::TypeInfo;
 pub use serde;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
-use sp_runtime_interface::pass_by::{PassByEnum, PassByInner};
 use sp_std::{ops::Deref, prelude::*};
 
 pub use sp_debug_derive::RuntimeDebug;
@@ -174,7 +173,6 @@ impl sp_std::ops::Deref for OpaqueMetadata {
 	Encode,
 	Decode,
 	RuntimeDebug,
-	PassByInner,
 	TypeInfo,
 )]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -196,7 +194,7 @@ pub trait TypeId {
 /// A log level matching the one from `log` crate.
 ///
 /// Used internally by `sp_io::logging::log` method.
-#[derive(Encode, Decode, PassByEnum, Copy, Clone)]
+#[derive(Encode, Decode, Copy, Clone)]
 pub enum LogLevel {
 	/// `Error` log level.
 	Error = 1_isize,
@@ -251,7 +249,7 @@ impl From<LogLevel> for log::Level {
 /// Log level filter that expresses which log levels should be filtered.
 ///
 /// This enum matches the [`log::LevelFilter`] enum.
-#[derive(Encode, Decode, PassByEnum, Copy, Clone)]
+#[derive(Encode, Decode, Copy, Clone)]
 pub enum LogLevelFilter {
 	/// `Off` log level filter.
 	Off = 0_isize,

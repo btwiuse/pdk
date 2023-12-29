@@ -1,3 +1,12 @@
 #!/usr/bin/env bash
-cargo zigbuild -r -p polkadot --target $(uname -m)-unknown-linux-musl
-file ./target/$(uname -m)-unknown-linux-musl/release/polkadot*
+cargo zigbuild -r -p polkadot --target aarch64-apple-darwin
+cargo zigbuild -r -p polkadot --target x86_64-apple-darwin
+exit
+file ./target/aarch64-unknown-linux-musl/release/polkadot*
+
+cargo zigbuild -r -p polkadot --target aarch64-unknown-linux-musl
+file ./target/aarch64-unknown-linux-musl/release/polkadot*
+pushd ./target/aarch64-unknown-linux-musl/release/
+tar cz polkadot polkadot-execute-worker polkadot-prepare-worker > dot.tgz
+# cargo zigbuild -r -p polkadot --target $(uname -m)-unknown-linux-musl
+# file ./target/$(uname -m)-unknown-linux-musl/release/polkadot*

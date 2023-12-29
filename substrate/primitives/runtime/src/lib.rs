@@ -60,9 +60,6 @@ pub use paste;
 #[doc(hidden)]
 pub use sp_arithmetic::traits::Saturating;
 
-#[doc(hidden)]
-pub use sp_application_crypto as app_crypto;
-
 pub use sp_core::storage::StateVersion;
 #[cfg(feature = "std")]
 pub use sp_core::storage::{Storage, StorageChild};
@@ -100,7 +97,6 @@ pub use multiaddress::MultiAddress;
 /// Re-export these since they're only "kind of" generic.
 pub use generic::{Digest, DigestItem};
 
-pub use sp_application_crypto::{BoundToRuntimeAppPublic, RuntimeAppPublic};
 /// Re-export this since it's part of the API of this crate.
 pub use sp_core::{
 	bounded::{BoundedBTreeMap, BoundedBTreeSet, BoundedSlice, BoundedVec, WeakBoundedVec},

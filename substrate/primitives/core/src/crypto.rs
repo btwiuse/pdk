@@ -28,7 +28,6 @@ use rand::{rngs::OsRng, RngCore};
 use scale_info::TypeInfo;
 #[cfg(feature = "std")]
 pub use secrecy::{ExposeSecret, SecretString};
-use sp_runtime_interface::pass_by::PassByInner;
 #[doc(hidden)]
 pub use sp_std::ops::Deref;
 #[cfg(all(not(feature = "std"), feature = "serde"))]
@@ -1072,7 +1071,6 @@ pub trait CryptoType {
 	Hash,
 	Encode,
 	Decode,
-	PassByInner,
 	crate::RuntimeDebug,
 	TypeInfo,
 )]

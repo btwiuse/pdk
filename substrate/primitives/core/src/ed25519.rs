@@ -42,7 +42,6 @@ use core::convert::TryFrom;
 use ed25519_zebra::{SigningKey, VerificationKey};
 #[cfg(feature = "serde")]
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
-use sp_runtime_interface::pass_by::PassByInner;
 #[cfg(all(not(feature = "std"), feature = "serde"))]
 use sp_std::alloc::{format, string::String};
 use sp_std::ops::Deref;
@@ -67,7 +66,6 @@ type Seed = [u8; 32];
 	Copy,
 	Encode,
 	Decode,
-	PassByInner,
 	MaxEncodedLen,
 	TypeInfo,
 )]
@@ -211,7 +209,7 @@ impl<'de> Deserialize<'de> for Public {
 
 /// A signature (a 512-bit value).
 #[cfg_attr(feature = "full_crypto", derive(Hash))]
-#[derive(Encode, Decode, MaxEncodedLen, PassByInner, TypeInfo, PartialEq, Eq)]
+#[derive(Encode, Decode, MaxEncodedLen, TypeInfo, PartialEq, Eq)]
 pub struct Signature(pub [u8; 64]);
 
 impl TryFrom<&[u8]> for Signature {

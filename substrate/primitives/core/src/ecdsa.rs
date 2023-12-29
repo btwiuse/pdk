@@ -19,7 +19,6 @@
 
 use codec::{Decode, Encode, MaxEncodedLen};
 use scale_info::TypeInfo;
-use sp_runtime_interface::pass_by::PassByInner;
 
 #[cfg(feature = "serde")]
 use crate::crypto::Ss58Codec;
@@ -69,7 +68,6 @@ type Seed = [u8; 32];
 	Copy,
 	Encode,
 	Decode,
-	PassByInner,
 	MaxEncodedLen,
 	TypeInfo,
 	Eq,
@@ -203,7 +201,7 @@ impl<'de> Deserialize<'de> for Public {
 
 /// A signature (a 512-bit value, plus 8 bits for recovery ID).
 #[cfg_attr(feature = "full_crypto", derive(Hash))]
-#[derive(Encode, Decode, MaxEncodedLen, PassByInner, TypeInfo, PartialEq, Eq)]
+#[derive(Encode, Decode, MaxEncodedLen, TypeInfo, PartialEq, Eq)]
 pub struct Signature(pub [u8; SIGNATURE_SERIALIZED_SIZE]);
 
 impl ByteArray for Signature {

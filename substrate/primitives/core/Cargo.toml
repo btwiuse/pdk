@@ -51,7 +51,7 @@ schnorrkel = { version = "0.9.1", features = ["preaudit_deprecated", "u64_backen
 merlin = { version = "2.0", default-features = false }
 secp256k1 = { version = "0.28.0", default-features = false, features = ["alloc", "recovery"], optional = true }
 sp-core-hashing = { path = "hashing", default-features = false, optional = true }
-sp-runtime-interface = { path = "../runtime-interface", default-features = false }
+# sp-runtime-interface = { path = "../runtime-interface", default-features = false }
 
 # bls crypto
 w3f-bls = { version = "0.1.3", default-features = false, optional = true }
@@ -110,7 +110,7 @@ std = [
 	"sp-core-hashing/std",
 	"sp-debug-derive/std",
 	"sp-externalities/std",
-	"sp-runtime-interface/std",
+	# "sp-runtime-interface/std",
 	"sp-std/std",
 	"sp-storage/std",
 	"ss58-registry/std",
@@ -147,7 +147,7 @@ full_crypto = [
 	"libsecp256k1",
 	"secp256k1",
 	"sp-core-hashing",
-	"sp-runtime-interface/disable_target_static_assertions",
+	# "sp-runtime-interface/disable_target_static_assertions",
 ]
 
 # This feature adds BLS crypto primitives.

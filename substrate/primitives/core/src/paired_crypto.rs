@@ -33,7 +33,6 @@ use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 #[cfg(all(not(feature = "std"), feature = "serde"))]
 use sp_std::alloc::{format, string::String};
 
-use sp_runtime_interface::pass_by::{self, PassBy, PassByInner};
 use sp_std::convert::TryFrom;
 
 /// ECDSA and BLS12-377 paired crypto scheme
@@ -193,26 +192,6 @@ impl<const LEFT_PLUS_RIGHT_LEN: usize> AsMut<[u8]> for Public<LEFT_PLUS_RIGHT_LE
 	fn as_mut(&mut self) -> &mut [u8] {
 		&mut self.0[..]
 	}
-}
-
-impl<const LEFT_PLUS_RIGHT_LEN: usize> PassByInner for Public<LEFT_PLUS_RIGHT_LEN> {
-	type Inner = [u8; LEFT_PLUS_RIGHT_LEN];
-
-	fn into_inner(self) -> Self::Inner {
-		self.0
-	}
-
-	fn inner(&self) -> &Self::Inner {
-		&self.0
-	}
-
-	fn from_inner(inner: Self::Inner) -> Self {
-		Self(inner)
-	}
-}
-
-impl<const LEFT_PLUS_RIGHT_LEN: usize> PassBy for Public<LEFT_PLUS_RIGHT_LEN> {
-	type PassBy = pass_by::Inner<Self, [u8; LEFT_PLUS_RIGHT_LEN]>;
 }
 
 #[cfg(feature = "full_crypto")]
