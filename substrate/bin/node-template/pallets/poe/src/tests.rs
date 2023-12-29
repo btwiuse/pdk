@@ -101,3 +101,46 @@ fn revoke_non_claim_owner_fails() {
 		);
 	});
 }
+
+#[test]
+fn transfer_claim_works() {
+	new_test_ext().execute_with(|| {
+		let input: Vec<u8> = vec![0, 1];
+		let _ = PoeModule::create_claim(RuntimeOrigin::signed(1), input.clone());
+		assert_ok!(PoeModule::transfer_claim(RuntimeOrigin::signed(1), input.clone(), 42));
+		let bounded_input =
+			BoundedVec::<u8, <Test as Config>::ProofSizeLimit>::try_from(input.clone()).unwrap();
+		assert_eq!(
+			PoeModule::proofs(&bounded_input),
+			Some((42, frame_system::Pallet::<Test>::block_number()))
+		);
+		assert_noop!(
+			PoeModule::revoke_claim(RuntimeOrigin::signed(1), input.clone()),
+			Error::<Test>::NotProofOwner
+		);
+	});
+}
+
+#[test]
+fn transfer_non_owned_claim_fails() {
+	new_test_ext().execute_with(|| {
+		let claim: Vec<u8> = vec![0, 1];
+		let _ = PoeModule::create_claim(RuntimeOrigin::signed(1), claim.clone());
+		assert_noop!(
+			PoeModule::transfer_claim(RuntimeOrigin::signed(2), claim.clone(), 42),
+			Error::<Test>::NotProofOwner
+		);
+	});
+}
+
+
+#[test]
+fn transfer_non_existent_claim_fails() {
+	new_test_ext().execute_with(|| {
+		let claim: Vec<u8> = vec![0, 1];
+		assert_noop!(
+			PoeModule::transfer_claim(RuntimeOrigin::signed(1), claim.clone(), 42),
+			Error::<Test>::NoSuchProof
+		);
+	});
+}
