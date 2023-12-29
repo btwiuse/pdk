@@ -1,4 +1,4 @@
-use crate as pallet_template;
+use crate as pallet_poe;
 use frame_support::traits::{ConstU16, ConstU64};
 use frame_support::parameter_types;
 use sp_core::H256;
@@ -14,7 +14,7 @@ frame_support::construct_runtime!(
 	pub enum Test
 	{
 		System: frame_system,
-		TemplateModule: pallet_template,
+		PoeModule: pallet_poe,
 	}
 );
 
@@ -49,7 +49,7 @@ parameter_types! {
 	pub const ProofSizeLimit : u32 = 42;
 }
 
-impl pallet_template::Config for Test {
+impl pallet_poe::Config for Test {
 	type ProofSizeLimit = ProofSizeLimit;
 	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = ();
