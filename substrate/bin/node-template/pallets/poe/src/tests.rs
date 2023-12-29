@@ -69,3 +69,12 @@ fn create_large_claim_fails() {
 		);
 	});
 }
+
+#[test]
+fn revoke_claim_works() {
+	new_test_ext().execute_with(|| {
+		let claim: Vec<u8> = vec![0, 1];
+		let _ = PoeModule::create_claim(RuntimeOrigin::signed(1), claim.clone());
+		assert_ok!(PoeModule::revoke_claim(RuntimeOrigin::signed(1), claim.clone()));
+	});
+}
