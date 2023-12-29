@@ -1,5 +1,6 @@
 use crate as pallet_template;
 use frame_support::traits::{ConstU16, ConstU64};
+use frame_support::parameter_types;
 use sp_core::H256;
 use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup},
@@ -18,6 +19,7 @@ frame_support::construct_runtime!(
 );
 
 impl frame_system::Config for Test {
+	type RuntimeTask = RuntimeTask;
 	type BaseCallFilter = frame_support::traits::Everything;
 	type BlockWeights = ();
 	type BlockLength = ();
@@ -43,7 +45,12 @@ impl frame_system::Config for Test {
 	type MaxConsumers = frame_support::traits::ConstU32<16>;
 }
 
+parameter_types! {
+	pub const ProofSizeLimit : u32 = 42;
+}
+
 impl pallet_template::Config for Test {
+	type ProofSizeLimit = ProofSizeLimit;
 	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = ();
 }
