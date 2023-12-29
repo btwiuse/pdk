@@ -53,3 +53,19 @@ fn create_existing_claim_fails() {
 		);
 	});
 }
+
+#[test]
+fn create_large_claim_fails() {
+	new_test_ext().execute_with(|| {
+		let input: Vec<u8> = vec![
+			0;
+			TryInto::<usize>::try_into(<Test as Config>::ProofSizeLimit::get()).unwrap() +
+				1
+		];
+		let _ = PoeModule::create_claim(RuntimeOrigin::signed(1), input.clone());
+		assert_noop!(
+			PoeModule::create_claim(RuntimeOrigin::signed(1), input.clone()),
+			Error::<Test>::ProofTooLarge
+		);
+	});
+}
