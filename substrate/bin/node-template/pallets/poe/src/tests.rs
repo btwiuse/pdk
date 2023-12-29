@@ -89,3 +89,15 @@ fn revoke_non_existent_claim_fails() {
 		);
 	});
 }
+
+#[test]
+fn revoke_non_claim_owner_fails() {
+	new_test_ext().execute_with(|| {
+		let claim: Vec<u8> = vec![0, 1];
+		let _ = PoeModule::create_claim(RuntimeOrigin::signed(1), claim.clone());
+		assert_noop!(
+			PoeModule::revoke_claim(RuntimeOrigin::signed(2), claim.clone()),
+			Error::<Test>::NotProofOwner
+		);
+	});
+}
