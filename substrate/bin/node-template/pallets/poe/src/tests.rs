@@ -41,3 +41,15 @@ fn create_claim_works() {
 		);
 	});
 }
+
+#[test]
+fn create_existing_claim_fails() {
+	new_test_ext().execute_with(|| {
+		let input: Vec<u8> = vec![0, 1];
+		let _ = PoeModule::create_claim(RuntimeOrigin::signed(1), input.clone());
+		assert_noop!(
+			PoeModule::create_claim(RuntimeOrigin::signed(1), input.clone()),
+			Error::<Test>::ProofAlreadyClaimed
+		);
+	});
+}
