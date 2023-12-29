@@ -78,3 +78,14 @@ fn revoke_claim_works() {
 		assert_ok!(PoeModule::revoke_claim(RuntimeOrigin::signed(1), claim.clone()));
 	});
 }
+
+#[test]
+fn revoke_non_existent_claim_fails() {
+	new_test_ext().execute_with(|| {
+		let claim: Vec<u8> = vec![0, 1];
+		assert_noop!(
+			PoeModule::revoke_claim(RuntimeOrigin::signed(1), claim.clone()),
+			Error::<Test>::NoSuchProof
+		);
+	});
+}
