@@ -615,15 +615,11 @@ mod tests {
 
 	#[cfg(feature = "db")]
 	#[test]
-<<<<<<< HEAD
-	fn test_migrate_3_to_5() {
-=======
-	fn test_rocksdb_migrate_3_to_4() {
+	fn test_rocksdb_migrate_3_to_5() {
 		use kvdb_rocksdb::{Database, DatabaseConfig};
 		use polkadot_node_core_approval_voting::approval_db::v2::migration_helpers::v1_to_v2_sanity_check;
 		use polkadot_node_subsystem_util::database::kvdb_impl::DbAdapter;
 
->>>>>>> 3881bbd1b5 (squash: joshy no rocks db (#2))
 		let db_dir = tempfile::tempdir().unwrap();
 		let db_path = db_dir.path().to_str().unwrap();
 		let db_cfg: DatabaseConfig = DatabaseConfig::with_columns(super::columns::v3::NUM_COLUMNS);
