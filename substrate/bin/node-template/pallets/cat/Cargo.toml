@@ -31,6 +31,7 @@ sp-core = { path = "../../../../primitives/core" }
 [features]
 default = [ "std" ]
 std = [
+	"pallet-insecure-randomness-collective-flip/std",
 	"codec/std",
 	"frame-benchmarking?/std",
 	"frame-support/std",
@@ -48,6 +49,7 @@ runtime-benchmarks = [
 	"sp-runtime/runtime-benchmarks",
 ]
 try-runtime = [
+	"pallet-insecure-randomness-collective-flip/try-runtime",
 	"frame-support/try-runtime",
 	"frame-system/try-runtime",
 	"sp-runtime/try-runtime",
