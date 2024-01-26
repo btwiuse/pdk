@@ -13,6 +13,7 @@ repository = "https://github.com/substrate-developer-hub/substrate-node-template
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
+pallet-insecure-randomness-collective-flip = { path = "../../../../frame/insecure-randomness-collective-flip", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.6.1", default-features = false, features = [
 	"derive",
 ] }
@@ -21,11 +22,11 @@ frame-benchmarking = { path = "../../../../frame/benchmarking", default-features
 frame-support = { path = "../../../../frame/support", default-features = false}
 frame-system = { path = "../../../../frame/system", default-features = false}
 sp-std = { path = "../../../../primitives/std", default-features = false}
+sp-io = { path = "../../../../primitives/io" }
+sp-runtime = { path = "../../../../primitives/runtime" }
 
 [dev-dependencies]
 sp-core = { path = "../../../../primitives/core" }
-sp-io = { path = "../../../../primitives/io" }
-sp-runtime = { path = "../../../../primitives/runtime" }
 
 [features]
 default = [ "std" ]

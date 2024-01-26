@@ -1,146 +1,100 @@
-use super::*;
-use frame_support::BoundedVec;
-use crate::{mock::*, Error, Event};
+use crate::{*, mock::*, Error, Event};
 use frame_support::{assert_noop, assert_ok};
 
 #[test]
-fn it_works_for_default_value() {
-	new_test_ext().execute_with(|| {
-		// Go past genesis block so events get deposited
-		System::set_block_number(1);
-		// Dispatch a signed extrinsic.
-		assert_ok!(CatModule::do_something(RuntimeOrigin::signed(1), 42));
-		// Read pallet storage and assert an expected result.
-		assert_eq!(CatModule::something(), Some(42));
-		// Assert that the correct event was deposited
-		System::assert_last_event(Event::SomethingStored { something: 42, who: 1 }.into());
-	});
+fn test_create() {
+    new_test_ext::<Test>().execute_with(|| {
+        let cat_id = 0;
+        let account_id = 1;
+
+        assert_eq!(CatModule::next_cat_id(), cat_id);
+        assert_ok!(CatModule::create_cat(RuntimeOrigin::signed(account_id)));
+
+        assert_eq!(CatModule::next_cat_id(), cat_id + 1);
+        assert_eq!(CatModule::cats(cat_id).is_some(), true);
+        assert_eq!(CatModule::cat_owner(cat_id), Some(account_id));
+        assert_eq!(CatModule::cat_parents(cat_id), None);
+
+        crate::NextCatId::<Test>::set(<Test as pallet::Config>::CatId::max_value());
+        assert_noop!(
+            CatModule::create_cat(RuntimeOrigin::signed(account_id)),
+            Error::<Test>::InvalidCatId
+        );
+
+        let cat = CatModule::cats(cat_id).expect("there should be a cat");
+        System::assert_last_event(Event::CatCreated(account_id, cat_id, cat).into());
+    })
 }
 
 #[test]
-fn correct_error_for_none_value() {
-	new_test_ext().execute_with(|| {
-		// Ensure the expected error is thrown when no value is present.
-		assert_noop!(
-			CatModule::cause_error(RuntimeOrigin::signed(1)),
-			Error::<Test>::NoneValue
-		);
-	});
+fn test_breed() {
+    new_test_ext::<Test>().execute_with(|| {
+        let account_id = 1;
+        let cat_id = 0;
+
+        assert_noop!(
+            CatModule::breed_cats(RuntimeOrigin::signed(account_id), cat_id, cat_id),
+            Error::<Test>::SameCatId
+        );
+
+        assert_noop!(
+            CatModule::breed_cats(RuntimeOrigin::signed(account_id), cat_id, cat_id + 1),
+            Error::<Test>::InvalidCatId
+        );
+
+        assert_ok!(CatModule::create_cat(RuntimeOrigin::signed(account_id)));
+        assert_ok!(CatModule::create_cat(RuntimeOrigin::signed(account_id)));
+
+        let child_id = cat_id + 2;
+        assert_eq!(CatModule::next_cat_id(), child_id);
+        assert_ok!(
+            CatModule::breed_cats(RuntimeOrigin::signed(account_id), cat_id, cat_id + 1)
+        );
+        assert_eq!(CatModule::next_cat_id(), child_id + 1);
+
+        assert_eq!(CatModule::cats(child_id).is_some(), true);
+        assert_eq!(CatModule::cat_owner(child_id), Some(account_id));
+        assert_eq!(
+            CatModule::cat_parents(child_id),
+            Some((cat_id, cat_id + 1))
+        );
+
+        let cat = CatModule::cats(child_id).expect("there should be a cat");
+        System::assert_last_event(
+            Event::CatBred(account_id, child_id, cat).into(),
+        );
+    })
 }
 
 #[test]
-fn create_claim_works() {
-	new_test_ext().execute_with(|| {
-		let input: Vec<u8> = vec![0, 1];
-		assert_ok!(CatModule::create_claim(RuntimeOrigin::signed(1), input.clone()));
-		let bounded_input =
-			BoundedVec::<u8, <Test as Config>::ProofSizeLimit>::try_from(input.clone()).unwrap();
-		assert_eq!(
-			CatModule::proofs(&bounded_input),
-			Some((1, frame_system::Pallet::<Test>::block_number()))
-		);
-	});
-}
+fn test_transfer() {
+    new_test_ext::<Test>().execute_with(|| {
+        let account_id = 1;
+        let cat_id = 0;
+        let recipient = 2;
 
-#[test]
-fn create_existing_claim_fails() {
-	new_test_ext().execute_with(|| {
-		let input: Vec<u8> = vec![0, 1];
-		let _ = CatModule::create_claim(RuntimeOrigin::signed(1), input.clone());
-		assert_noop!(
-			CatModule::create_claim(RuntimeOrigin::signed(1), input.clone()),
-			Error::<Test>::ProofAlreadyClaimed
-		);
-	});
-}
+        assert_ok!(CatModule::create_cat(RuntimeOrigin::signed(account_id)));
+        assert_eq!(CatModule::cat_owner(cat_id), Some(account_id));
 
-#[test]
-fn create_large_claim_fails() {
-	new_test_ext().execute_with(|| {
-		let input: Vec<u8> = vec![
-			0;
-			TryInto::<usize>::try_into(<Test as Config>::ProofSizeLimit::get()).unwrap() +
-				1
-		];
-		let _ = CatModule::create_claim(RuntimeOrigin::signed(1), input.clone());
-		assert_noop!(
-			CatModule::create_claim(RuntimeOrigin::signed(1), input.clone()),
-			Error::<Test>::ProofTooLarge
-		);
-	});
-}
+        assert_noop!(
+            CatModule::transfer_cat(RuntimeOrigin::signed(recipient), recipient, cat_id),
+            Error::<Test>::NotCatOwner
+        );
 
-#[test]
-fn revoke_claim_works() {
-	new_test_ext().execute_with(|| {
-		let claim: Vec<u8> = vec![0, 1];
-		let _ = CatModule::create_claim(RuntimeOrigin::signed(1), claim.clone());
-		assert_ok!(CatModule::revoke_claim(RuntimeOrigin::signed(1), claim.clone()));
-	});
-}
+        assert_ok!(
+            CatModule::transfer_cat(RuntimeOrigin::signed(account_id), recipient, cat_id)
+        );
+        assert_eq!(CatModule::cat_owner(cat_id), Some(recipient));
+        System::assert_last_event(
+            Event::CatTransferred(account_id, recipient, cat_id).into(),
+        );
 
-#[test]
-fn revoke_non_existent_claim_fails() {
-	new_test_ext().execute_with(|| {
-		let claim: Vec<u8> = vec![0, 1];
-		assert_noop!(
-			CatModule::revoke_claim(RuntimeOrigin::signed(1), claim.clone()),
-			Error::<Test>::NoSuchProof
-		);
-	});
-}
-
-#[test]
-fn revoke_non_claim_owner_fails() {
-	new_test_ext().execute_with(|| {
-		let claim: Vec<u8> = vec![0, 1];
-		let _ = CatModule::create_claim(RuntimeOrigin::signed(1), claim.clone());
-		assert_noop!(
-			CatModule::revoke_claim(RuntimeOrigin::signed(2), claim.clone()),
-			Error::<Test>::NotProofOwner
-		);
-	});
-}
-
-#[test]
-fn transfer_claim_works() {
-	new_test_ext().execute_with(|| {
-		let input: Vec<u8> = vec![0, 1];
-		let _ = CatModule::create_claim(RuntimeOrigin::signed(1), input.clone());
-		assert_ok!(CatModule::transfer_claim(RuntimeOrigin::signed(1), input.clone(), 42));
-		let bounded_input =
-			BoundedVec::<u8, <Test as Config>::ProofSizeLimit>::try_from(input.clone()).unwrap();
-		assert_eq!(
-			CatModule::proofs(&bounded_input),
-			Some((42, frame_system::Pallet::<Test>::block_number()))
-		);
-		assert_noop!(
-			CatModule::revoke_claim(RuntimeOrigin::signed(1), input.clone()),
-			Error::<Test>::NotProofOwner
-		);
-	});
-}
-
-#[test]
-fn transfer_non_owned_claim_fails() {
-	new_test_ext().execute_with(|| {
-		let claim: Vec<u8> = vec![0, 1];
-		let _ = CatModule::create_claim(RuntimeOrigin::signed(1), claim.clone());
-		assert_noop!(
-			CatModule::transfer_claim(RuntimeOrigin::signed(2), claim.clone(), 42),
-			Error::<Test>::NotProofOwner
-		);
-	});
-}
-
-
-#[test]
-fn transfer_non_existent_claim_fails() {
-	new_test_ext().execute_with(|| {
-		let claim: Vec<u8> = vec![0, 1];
-		assert_noop!(
-			CatModule::transfer_claim(RuntimeOrigin::signed(1), claim.clone(), 42),
-			Error::<Test>::NoSuchProof
-		);
-	});
+        assert_ok!(
+            CatModule::transfer_cat(RuntimeOrigin::signed(recipient), account_id, cat_id)
+        );
+        assert_eq!(CatModule::cat_owner(cat_id), Some(account_id));
+        System::assert_last_event(
+            Event::CatTransferred(recipient, account_id, cat_id).into(),
+        );
+    })
 }
