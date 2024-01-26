@@ -6,6 +6,11 @@ mod mock;
 #[cfg(test)]
 mod tests;
 
+#[cfg(feature = "runtime-benchmarks")]
+mod benchmarking;
+pub mod weights;
+pub use weights::*;
+
 // Re-export pallet items so that they can be accessed from the crate namespace.
 pub use pallet::*;
 
@@ -26,6 +31,7 @@ pub mod pallet {
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 		type CatId: sp_runtime::traits::AtLeast32BitUnsigned + codec::EncodeLike + Clone + Copy + Decode + scale_info::prelude::fmt::Debug + Default + Eq + PartialEq + TypeInfo + MaxEncodedLen + One;
 		type Randomness: Randomness<Self::Hash, BlockNumberFor<Self>>;
+		type WeightInfo: WeightInfo;
 	}
 
     #[derive(

@@ -47,6 +47,8 @@ pub use sp_runtime::{Perbill, Permill};
 
 /// Import the template pallet.
 pub use pallet_template;
+pub use pallet_poe;
+pub use pallet_cat;
 
 /// An index to a block.
 pub type BlockNumber = u32;
@@ -259,7 +261,7 @@ parameter_types! {
 	pub const ProofSizeLimit: u32 = 4096;
 }
 
-/// Configure the pallet-poe in pallets/template.
+/// Configure the pallet-poe in pallets/poe.
 impl pallet_poe::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = pallet_poe::weights::SubstrateWeight<Runtime>;
@@ -268,11 +270,12 @@ impl pallet_poe::Config for Runtime {
 
 impl pallet_insecure_randomness_collective_flip::Config for Runtime {}
 
-/// Configure the pallet-cat in pallets/template.
+/// Configure the pallet-cat in pallets/cat.
 impl pallet_cat::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type CatId = u32;
 	type Randomness = RandomnessCollectiveFlip;
+	type WeightInfo = pallet_cat::weights::SubstrateWeight<Runtime>;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -341,6 +344,8 @@ mod benches {
 		[pallet_timestamp, Timestamp]
 		[pallet_sudo, Sudo]
 		[pallet_template, TemplateModule]
+		[pallet_poe, PoeModule]
+		[pallet_cat, CatModule]
 	);
 }
 

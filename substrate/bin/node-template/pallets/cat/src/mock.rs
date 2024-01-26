@@ -53,6 +53,7 @@ impl pallet_cat::Config for Test {
 	type RuntimeEvent = RuntimeEvent;
 	type Randomness = Randomness;
 	type CatId = u32;
+	type WeightInfo = ();
 }
 
 // Build genesis storage according to the mock runtime.
