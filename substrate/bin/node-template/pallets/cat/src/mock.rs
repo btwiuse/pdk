@@ -1,4 +1,5 @@
 use crate as pallet_cat;
+use pallet_insecure_randomness_collective_flip;
 use frame_support::traits::{ConstU16, ConstU64};
 use frame_support::parameter_types;
 use sp_core::H256;
@@ -14,6 +15,7 @@ frame_support::construct_runtime!(
 	pub enum Test
 	{
 		System: frame_system,
+		Randomness: pallet_insecure_randomness_collective_flip,
 		CatModule: pallet_cat,
 	}
 );
@@ -45,17 +47,18 @@ impl frame_system::Config for Test {
 	type MaxConsumers = frame_support::traits::ConstU32<16>;
 }
 
-parameter_types! {
-	pub const ProofSizeLimit : u32 = 42;
-}
+impl pallet_insecure_randomness_collective_flip::Config for Test {}
 
 impl pallet_cat::Config for Test {
-	type ProofSizeLimit = ProofSizeLimit;
 	type RuntimeEvent = RuntimeEvent;
-	type WeightInfo = ();
+	type Randomness = Randomness;
+	type CatId = u32;
 }
 
 // Build genesis storage according to the mock runtime.
-pub fn new_test_ext() -> sp_io::TestExternalities {
-	frame_system::GenesisConfig::<Test>::default().build_storage().unwrap().into()
+pub fn new_test_ext<T: pallet_cat::Config>() -> sp_io::TestExternalities {
+	let mut ext: sp_io::TestExternalities =
+		frame_system::GenesisConfig::<T>::default().build_storage().unwrap().into();
+	ext.execute_with(|| System::set_block_number(1));
+	ext
 }
