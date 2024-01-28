@@ -39,6 +39,7 @@ mod benchmarking;
 mod events;
 mod errors;
 mod call;
+mod config;
 
 pub mod weights;
 pub use weights::*;
@@ -50,6 +51,7 @@ use frame_support::pallet_macros::*;
 #[import_section(events::events)]
 #[import_section(errors::errors)]
 #[import_section(call::call)]
+#[import_section(config::config)]
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
@@ -58,15 +60,6 @@ pub mod pallet {
 
 	#[pallet::pallet]
 	pub struct Pallet<T>(_);
-
-	/// Configure the pallet by specifying the parameters and types on which it depends.
-	#[pallet::config]
-	pub trait Config: frame_system::Config {
-		/// Because this pallet emits events, it depends on the runtime's definition of an event.
-		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
-		/// Type representing the weight of this pallet
-		type WeightInfo: WeightInfo;
-	}
 
 	// The pallet's runtime storage items.
 	#[pallet::storage]
