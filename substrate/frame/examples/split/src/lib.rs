@@ -37,6 +37,7 @@ mod tests;
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
 mod events;
+mod errors;
 
 pub mod weights;
 pub use weights::*;
@@ -46,6 +47,7 @@ use frame_support::pallet_macros::*;
 /// Imports a [`pallet_section`] defined at [`events::events`].
 /// This brings the events defined in that section into the pallet's namespace.
 #[import_section(events::events)]
+#[import_section(errors::errors)]
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
@@ -67,15 +69,6 @@ pub mod pallet {
 	// The pallet's runtime storage items.
 	#[pallet::storage]
 	pub type Something<T> = StorageValue<_, u32>;
-
-	// Errors inform users that something went wrong.
-	#[pallet::error]
-	pub enum Error<T> {
-		/// Error names should be descriptive.
-		NoneValue,
-		/// Errors should have helpful documentation associated with them.
-		StorageOverflow,
-	}
 
 	// Dispatchable functions allows users to interact with the pallet and invoke state changes.
 	// These functions materialize as "extrinsics", which are often compared to transactions.
