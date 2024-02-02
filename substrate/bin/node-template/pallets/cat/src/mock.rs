@@ -1,8 +1,10 @@
 use crate as pallet_cat;
 use frame_support::{
 	parameter_types,
-	traits::{ConstU16, ConstU64},
+	traits::{ConstU16, ConstU32, ConstU64, ConstU128},
+	PalletId,
 };
+use pallet_balances::{self, AccountData};
 use pallet_insecure_randomness_collective_flip;
 use sp_core::H256;
 use sp_runtime::{
@@ -19,8 +21,31 @@ frame_support::construct_runtime!(
 		System: frame_system,
 		Randomness: pallet_insecure_randomness_collective_flip,
 		CatModule: pallet_cat,
+		Balances: pallet_balances,
 	}
 );
+
+pub type Balance = u128;
+
+pub const EXISTENTIAL_DEPOSIT: u128 = 500;
+
+impl pallet_balances::Config for Test {
+	type RuntimeHoldReason = ();
+	type RuntimeFreezeReason = ();
+	type FreezeIdentifier = ();
+	type MaxFreezes = ();
+	type MaxLocks = ConstU32<50>;
+	type MaxReserves = ();
+	type ReserveIdentifier = [u8; 8];
+	/// The type for recording an account's balance.
+	type Balance = Balance;
+	/// The ubiquitous event type.
+	type RuntimeEvent = RuntimeEvent;
+	type DustRemoval = ();
+	type ExistentialDeposit = ConstU128<EXISTENTIAL_DEPOSIT>;
+	type AccountStore = System;
+	type WeightInfo = pallet_balances::weights::SubstrateWeight<Test>;
+}
 
 impl frame_system::Config for Test {
 	type RuntimeTask = RuntimeTask;
@@ -40,7 +65,7 @@ impl frame_system::Config for Test {
 	type BlockHashCount = ConstU64<250>;
 	type Version = ();
 	type PalletInfo = PalletInfo;
-	type AccountData = ();
+	type AccountData = AccountData<Balance>;
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
 	type SystemWeightInfo = ();
@@ -51,11 +76,19 @@ impl frame_system::Config for Test {
 
 impl pallet_insecure_randomness_collective_flip::Config for Test {}
 
+parameter_types! {
+	pub CatPalletId: PalletId = PalletId(*b"py/meoww");
+	pub CatPrice: Balance = EXISTENTIAL_DEPOSIT * 10;
+}
+
 impl pallet_cat::Config for Test {
 	type RuntimeEvent = RuntimeEvent;
 	type Randomness = Randomness;
 	type CatId = u32;
 	type WeightInfo = ();
+	type Currency = Balances;
+	type CatPrice = CatPrice;
+	type PalletId = CatPalletId;
 }
 
 // Build genesis storage according to the mock runtime.

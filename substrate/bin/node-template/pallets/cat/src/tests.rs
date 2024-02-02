@@ -1,11 +1,17 @@
 use crate::{mock::*, Error, Event, *};
 use frame_support::{assert_noop, assert_ok};
+use frame_support::traits::fungible::Mutate;
+
+const ACCOUNT_BALANCE: u128 = 100000;
+const PALLET_BALANCE: u128 = 0;
 
 #[test]
 fn test_create() {
 	new_test_ext::<Test>().execute_with(|| {
 		let cat_id = 0;
 		let account_id = 1;
+
+		assert_ok!(Balances::force_set_balance(RuntimeOrigin::root(), account_id, ACCOUNT_BALANCE));
 
 		assert_eq!(CatModule::next_cat_id(), cat_id);
 		assert_ok!(CatModule::create_cat(RuntimeOrigin::signed(account_id)));
@@ -31,6 +37,8 @@ fn test_breed() {
 	new_test_ext::<Test>().execute_with(|| {
 		let account_id = 1;
 		let cat_id = 0;
+
+		assert_ok!(Balances::force_set_balance(RuntimeOrigin::root(), account_id, ACCOUNT_BALANCE));
 
 		assert_noop!(
 			CatModule::breed_cats(RuntimeOrigin::signed(account_id), cat_id, cat_id),
@@ -65,6 +73,9 @@ fn test_transfer() {
 		let account_id = 1;
 		let cat_id = 0;
 		let recipient = 2;
+
+		assert_ok!(Balances::force_set_balance(RuntimeOrigin::root(), account_id, ACCOUNT_BALANCE));
+		assert_ok!(Balances::force_set_balance(RuntimeOrigin::root(), recipient, ACCOUNT_BALANCE));
 
 		assert_ok!(CatModule::create_cat(RuntimeOrigin::signed(account_id)));
 		assert_eq!(CatModule::cat_owner(cat_id), Some(account_id));
