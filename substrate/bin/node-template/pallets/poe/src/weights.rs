@@ -48,8 +48,8 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`
-		// Minimum execution time: 10_014_000 picoseconds.
-		Weight::from_parts(10_560_000, 0)
+		// Minimum execution time: 9_964_000 picoseconds.
+		Weight::from_parts(10_468_000, 0)
 			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}
 	/// Storage: `Poe::Something` (r:1 w:1)
@@ -58,8 +58,8 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 		// Proof Size summary in bytes:
 		//  Measured:  `32`
 		//  Estimated: `1489`
-		// Minimum execution time: 8_471_000 picoseconds.
-		Weight::from_parts(8_882_000, 1489)
+		// Minimum execution time: 8_511_000 picoseconds.
+		Weight::from_parts(8_852_000, 1489)
 			.saturating_add(T::DbWeight::get().reads(1_u64))
 			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}
@@ -73,8 +73,8 @@ impl WeightInfo for () {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`
-		// Minimum execution time: 10_014_000 picoseconds.
-		Weight::from_parts(10_560_000, 0)
+		// Minimum execution time: 9_964_000 picoseconds.
+		Weight::from_parts(10_468_000, 0)
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
 	/// Storage: `Poe::Something` (r:1 w:1)
@@ -83,8 +83,8 @@ impl WeightInfo for () {
 		// Proof Size summary in bytes:
 		//  Measured:  `32`
 		//  Estimated: `1489`
-		// Minimum execution time: 8_471_000 picoseconds.
-		Weight::from_parts(8_882_000, 1489)
+		// Minimum execution time: 8_511_000 picoseconds.
+		Weight::from_parts(8_852_000, 1489)
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}

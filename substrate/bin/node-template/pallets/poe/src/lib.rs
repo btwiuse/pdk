@@ -224,8 +224,8 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(2)]
-		// #[pallet::weight({2})]
-		#[pallet::weight(T::WeightInfo::create_claim())]
+		#[pallet::weight({2})]
+		// #[pallet::weight(T::WeightInfo::create_claim())]
 		pub fn create_claim(origin: OriginFor<T>, input: Vec<u8>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 
