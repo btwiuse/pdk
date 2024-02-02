@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+template=../../../target/$(uname -m)-unknown-linux-musl/release/node-template
+
+$template benchmark pallet --list
+# $template benchmark pallet --dev --pallet pallet_poe --extrinsic create_claim --steps 20 --repeat 50 --output ./pallets/poe/src/weights.rs --template ../../.maintain/frame-weight-template.hbs

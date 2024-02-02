@@ -1,225 +1,87 @@
-# Substrate Node Template
+```
+$ ./bench-test 
+    Finished test [unoptimized + debuginfo] target(s) in 1.04s
+     Running unittests src/lib.rs (/var/lib/buildkite-agent/pdk/target/debug/deps/pallet_poe-485d0292fa61208d)
 
-A fresh [Substrate](https://substrate.io/) node, ready for hacking :rocket:
+running 13 tests
+test mock::__construct_runtime_integrity_test::runtime_integrity_tests ... ok
+test tests::revoke_non_existent_claim_fails ... ok
+test tests::transfer_non_existent_claim_fails ... ok
+test tests::correct_error_for_none_value ... ok
+test tests::create_claim_works ... ok
+test tests::revoke_claim_works ... ok
+test tests::create_large_claim_fails ... ok
+test tests::it_works_for_default_value ... ok
+test tests::create_existing_claim_fails ... ok
+test tests::revoke_non_claim_owner_fails ... ok
+test tests::transfer_claim_works ... ok
+test tests::transfer_non_owned_claim_fails ... ok
+test benchmarking::benchmarks::benchmark_tests::test_benchmarks ... ok
 
-A standalone version of this template is available for each release of Polkadot
-in the [Substrate Developer Hub Parachain
-Template](https://github.com/substrate-developer-hub/substrate-parachain-template/)
-repository. The parachain template is generated directly at each Polkadot
-release branch from the [Node Template in
-Substrate](https://github.com/paritytech/polkadot-sdk/tree/master/substrate/bin/node-template)
-upstream
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-It is usually best to use the stand-alone version to start a new project. All
-bugs, suggestions, and feature requests should be made upstream in the
-[Substrate](https://github.com/paritytech/polkadot-sdk/tree/master/substrate)
-repository.
+   Doc-tests pallet-poe
 
-## Getting Started
+running 0 tests
 
-Depending on your operating system and Rust version, there might be additional
-packages required to compile this template. Check the
-[Install](https://docs.substrate.io/install/) instructions for your platform for
-the most common dependencies. Alternatively, you can use one of the [alternative
-installation](#alternatives-installations) options.
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-### Build
-
-Use the following command to build the node without launching it:
-
-```sh
-cargo build --release
 ```
 
-### Embedded Docs
-
-After you build the project, you can use the following command to explore its
-parameters and subcommands:
-
-```sh
-./target/release/node-template -h
+```
+$ ./musl-build 
+    Finished release [optimized] target(s) in 1.25s
+../../../target/x86_64-unknown-linux-musl/release/node-template: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, with debug_info, not stripped
+69M     ../../../target/x86_64-unknown-linux-musl/release/node-template
+/var/lib/buildkite-agent/pdk/target/x86_64-unknown-linux-musl/release/node-template
 ```
 
-You can generate and view the [Rust
-Docs](https://doc.rust-lang.org/cargo/commands/cargo-doc.html) for this template
-with this command:
-
-```sh
-cargo +nightly doc --open
+```
+$ ./bench-list 
+pallet, benchmark
+frame_benchmarking, addition
+frame_benchmarking, division
+frame_benchmarking, hashing
+frame_benchmarking, multiplication
+frame_benchmarking, sr25519_verification
+frame_benchmarking, subtraction
+frame_system, apply_authorized_upgrade
+frame_system, authorize_upgrade
+frame_system, kill_prefix
+frame_system, kill_storage
+frame_system, remark
+frame_system, remark_with_event
+frame_system, set_code
+frame_system, set_heap_pages
+frame_system, set_storage
+pallet_balances, force_adjust_total_issuance
+pallet_balances, force_set_balance_creating
+pallet_balances, force_set_balance_killing
+pallet_balances, force_transfer
+pallet_balances, force_unreserve
+pallet_balances, transfer_all
+pallet_balances, transfer_allow_death
+pallet_balances, transfer_keep_alive
+pallet_balances, upgrade_accounts
+pallet_poe, cause_error
+pallet_poe, create_claim
+pallet_poe, do_something
+pallet_poe, revoke_claim
+pallet_poe, transfer_claim
+pallet_sudo, remove_key
+pallet_sudo, set_key
+pallet_sudo, sudo
+pallet_sudo, sudo_as
+pallet_template, cause_error
+pallet_template, do_something
+pallet_timestamp, on_finalize
+pallet_timestamp, set
 ```
 
-### Single-Node Development Chain
-
-The following command starts a single-node development chain that doesn't
-persist state:
-
-```sh
-./target/release/node-template --dev
 ```
-
-To purge the development chain's state, run the following command:
-
-```sh
-./target/release/node-template purge-chain --dev
+$ ./bench
+2024-02-02 19:05:22 Starting benchmark: pallet_poe::do_something    
+2024-02-02 19:05:22 Starting benchmark: pallet_poe::cause_error    
+2024-02-02 19:05:22 Starting benchmark: pallet_poe::create_claim    
+2024-02-02 19:05:22 Starting benchmark: pallet_poe::revoke_claim
 ```
-
-To start the development chain with detailed logging, run the following command:
-
-```sh
-RUST_BACKTRACE=1 ./target/release/node-template -ldebug --dev
-```
-
-Development chains:
-
-- Maintain state in a `tmp` folder while the node is running.
-- Use the **Alice** and **Bob** accounts as default validator authorities.
-- Use the **Alice** account as the default `sudo` account.
-- Are preconfigured with a genesis state (`/node/src/chain_spec.rs`) that
-  includes several prefunded development accounts.
-
-
-To persist chain state between runs, specify a base path by running a command
-similar to the following:
-
-```sh
-// Create a folder to use as the db base path
-$ mkdir my-chain-state
-
-// Use of that folder to store the chain state
-$ ./target/release/node-template --dev --base-path ./my-chain-state/
-
-// Check the folder structure created inside the base path after running the chain
-$ ls ./my-chain-state
-chains
-$ ls ./my-chain-state/chains/
-dev
-$ ls ./my-chain-state/chains/dev
-db keystore network
-```
-
-### Connect with Polkadot-JS Apps Front-End
-
-After you start the node template locally, you can interact with it using the
-hosted version of the [Polkadot/Substrate
-Portal](https://polkadot.js.org/apps/#/explorer?rpc=ws://localhost:9944)
-front-end by connecting to the local node endpoint. A hosted version is also
-available on [IPFS (redirect) here](https://dotapps.io/) or [IPNS (direct)
-here](ipns://dotapps.io/?rpc=ws%3A%2F%2F127.0.0.1%3A9944#/explorer). You can
-also find the source code and instructions for hosting your own instance on the
-[`polkadot-js/apps`](https://github.com/polkadot-js/apps) repository.
-
-### Multi-Node Local Testnet
-
-If you want to see the multi-node consensus algorithm in action, see [Simulate a
-network](https://docs.substrate.io/tutorials/build-a-blockchain/simulate-network/).
-
-## Template Structure
-
-A Substrate project such as this consists of a number of components that are
-spread across a few directories.
-
-### Node
-
-A blockchain node is an application that allows users to participate in a
-blockchain network. Substrate-based blockchain nodes expose a number of
-capabilities:
-
-- Networking: Substrate nodes use the [`libp2p`](https://libp2p.io/) networking
-  stack to allow the nodes in the network to communicate with one another.
-- Consensus: Blockchains must have a way to come to
-  [consensus](https://docs.substrate.io/fundamentals/consensus/) on the state of
-  the network. Substrate makes it possible to supply custom consensus engines
-  and also ships with several consensus mechanisms that have been built on top
-  of [Web3 Foundation
-  research](https://research.web3.foundation/en/latest/polkadot/NPoS/index.html).
-- RPC Server: A remote procedure call (RPC) server is used to interact with
-  Substrate nodes.
-
-There are several files in the `node` directory. Take special note of the
-following:
-
-- [`chain_spec.rs`](./node/src/chain_spec.rs): A [chain
-  specification](https://docs.substrate.io/build/chain-spec/) is a source code
-  file that defines a Substrate chain's initial (genesis) state. Chain
-  specifications are useful for development and testing, and critical when
-  architecting the launch of a production chain. Take note of the
-  `development_config` and `testnet_genesis` functions,. These functions are
-  used to define the genesis state for the local development chain
-  configuration. These functions identify some [well-known
-  accounts](https://docs.substrate.io/reference/command-line-tools/subkey/) and
-  use them to configure the blockchain's initial state.
-- [`service.rs`](./node/src/service.rs): This file defines the node
-  implementation. Take note of the libraries that this file imports and the
-  names of the functions it invokes. In particular, there are references to
-  consensus-related topics, such as the [block finalization and
-  forks](https://docs.substrate.io/fundamentals/consensus/#finalization-and-forks)
-  and other [consensus
-  mechanisms](https://docs.substrate.io/fundamentals/consensus/#default-consensus-models)
-  such as Aura for block authoring and GRANDPA for finality.
-
-
-### Runtime
-
-In Substrate, the terms "runtime" and "state transition function" are analogous.
-Both terms refer to the core logic of the blockchain that is responsible for
-validating blocks and executing the state changes they define. The Substrate
-project in this repository uses
-[FRAME](https://docs.substrate.io/learn/runtime-development/#frame) to construct
-a blockchain runtime. FRAME allows runtime developers to declare domain-specific
-logic in modules called "pallets". At the heart of FRAME is a helpful [macro
-language](https://docs.substrate.io/reference/frame-macros/) that makes it easy
-to create pallets and flexibly compose them to create blockchains that can
-address [a variety of needs](https://substrate.io/ecosystem/projects/).
-
-Review the [FRAME runtime implementation](./runtime/src/lib.rs) included in this
-template and note the following:
-
-- This file configures several pallets to include in the runtime. Each pallet
-  configuration is defined by a code block that begins with `impl
-  $PALLET_NAME::Config for Runtime`.
-- The pallets are composed into a single runtime by way of the
-  [`construct_runtime!`](https://paritytech.github.io/substrate/master/frame_support/macro.construct_runtime.html)
-  macro, which is part of the [core FRAME pallet
-  library](https://docs.substrate.io/reference/frame-pallets/#system-pallets).
-
-### Pallets
-
-The runtime in this project is constructed using many FRAME pallets that ship
-with [the Substrate
-repository](https://github.com/paritytech/polkadot-sdk/tree/master/substrate/frame) and a
-template pallet that is [defined in the
-`pallets`](./pallets/template/src/lib.rs) directory.
-
-A FRAME pallet is comprised of a number of blockchain primitives, including:
-
-- Storage: FRAME defines a rich set of powerful [storage
-  abstractions](https://docs.substrate.io/build/runtime-storage/) that makes it
-  easy to use Substrate's efficient key-value database to manage the evolving
-  state of a blockchain.
-- Dispatchables: FRAME pallets define special types of functions that can be
-  invoked (dispatched) from outside of the runtime in order to update its state.
-- Events: Substrate uses
-  [events](https://docs.substrate.io/build/events-and-errors/) to notify users
-  of significant state changes.
-- Errors: When a dispatchable fails, it returns an error.
-
-Each pallet has its own `Config` trait which serves as a configuration interface
-to generically define the types and parameters it depends on.
-
-## Alternatives Installations
-
-Instead of installing dependencies and building this source directly, consider
-the following alternatives.
-
-### Nix
-
-Install [nix](https://nixos.org/) and
-[nix-direnv](https://github.com/nix-community/nix-direnv) for a fully
-plug-and-play experience for setting up the development environment. To get all
-the correct dependencies, activate direnv `direnv allow`.
-
-### Docker
-
-Please follow the [Substrate Docker instructions
-here](https://github.com/paritytech/polkadot-sdk/blob/master/substrate/docker/README.md) to
-build the Docker container with the Substrate Node Template binary.

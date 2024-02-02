@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+cargo t -p pallet-poe --features=runtime-benchmarks

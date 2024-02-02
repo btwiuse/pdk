@@ -3,7 +3,7 @@
 use super::*;
 
 #[allow(unused)]
-use crate::Pallet as Template;
+use crate::Pallet as PoeModule;
 use frame_benchmarking::v2::*;
 use frame_system::RawOrigin;
 use frame_system::EventRecord;
@@ -19,6 +19,7 @@ fn assert_last_event<T: Config>(generic_event: <T as Config>::RuntimeEvent) {
 #[benchmarks]
 mod benchmarks {
 	use super::*;
+	use sp_std::vec;
 
 	#[benchmark]
 	fn do_something() {
