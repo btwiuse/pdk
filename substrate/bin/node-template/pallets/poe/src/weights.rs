@@ -8,7 +8,7 @@
 //! WASM-EXECUTION: `Compiled`, CHAIN: `None`, DB CACHE: `1024`
 
 // Executed Command:
-// ../../../target/x86_64-unknown-linux-musl/release/node-template
+// ../../../target/release/node-template
 // benchmark
 // pallet
 // --dev
@@ -43,33 +43,35 @@ pub trait WeightInfo {
 /// Weights for `pallet_poe` using the Substrate node and recommended hardware.
 pub struct SubstrateWeight<T>(PhantomData<T>);
 impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
-	/// Storage: `Poe::Something` (r:0 w:1)
-	/// Proof: `Poe::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
+	/// Storage: `PoeModule::Something` (r:0 w:1)
+	/// Proof: `PoeModule::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
 	fn do_something() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`
-		// Minimum execution time: 10_014_000 picoseconds.
-		Weight::from_parts(10_560_000, 0)
+		// Minimum execution time: 8_680_000 picoseconds.
+		Weight::from_parts(8_967_000, 0)
 			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}
-	/// Storage: `Poe::Something` (r:1 w:1)
-	/// Proof: `Poe::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
+	/// Storage: `PoeModule::Something` (r:1 w:1)
+	/// Proof: `PoeModule::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
 	fn cause_error() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `32`
 		//  Estimated: `1489`
-		// Minimum execution time: 8_471_000 picoseconds.
-		Weight::from_parts(8_882_000, 1489)
+		// Minimum execution time: 7_429_000 picoseconds.
+		Weight::from_parts(7_608_000, 1489)
 			.saturating_add(T::DbWeight::get().reads(1_u64))
 			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}
+	/// Storage: `PoeModule::Proofs` (r:1 w:1)
+	/// Proof: `PoeModule::Proofs` (`max_values`: None, `max_size`: Some(4150), added: 6625, mode: `MaxEncodedLen`)
 	fn create_claim() -> Weight {
 		// Proof Size summary in bytes:
-		//  Measured:  `32`
-		//  Estimated: `1489`
-		// Minimum execution time: 8_471_000 picoseconds.
-		Weight::from_parts(8_882_000, 1489)
+		//  Measured:  `6`
+		//  Estimated: `7615`
+		// Minimum execution time: 18_234_000 picoseconds.
+		Weight::from_parts(18_747_000, 7615)
 			.saturating_add(T::DbWeight::get().reads(1_u64))
 			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}
@@ -77,33 +79,35 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 
 // For backwards compatibility and tests.
 impl WeightInfo for () {
-	/// Storage: `Poe::Something` (r:0 w:1)
-	/// Proof: `Poe::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
+	/// Storage: `PoeModule::Something` (r:0 w:1)
+	/// Proof: `PoeModule::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
 	fn do_something() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`
-		// Minimum execution time: 10_014_000 picoseconds.
-		Weight::from_parts(10_560_000, 0)
+		// Minimum execution time: 8_680_000 picoseconds.
+		Weight::from_parts(8_967_000, 0)
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
-	/// Storage: `Poe::Something` (r:1 w:1)
-	/// Proof: `Poe::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
+	/// Storage: `PoeModule::Something` (r:1 w:1)
+	/// Proof: `PoeModule::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
 	fn cause_error() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `32`
 		//  Estimated: `1489`
-		// Minimum execution time: 8_471_000 picoseconds.
-		Weight::from_parts(8_882_000, 1489)
+		// Minimum execution time: 7_429_000 picoseconds.
+		Weight::from_parts(7_608_000, 1489)
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
+	/// Storage: `PoeModule::Proofs` (r:1 w:1)
+	/// Proof: `PoeModule::Proofs` (`max_values`: None, `max_size`: Some(4150), added: 6625, mode: `MaxEncodedLen`)
 	fn create_claim() -> Weight {
 		// Proof Size summary in bytes:
-		//  Measured:  `32`
-		//  Estimated: `1489`
-		// Minimum execution time: 8_471_000 picoseconds.
-		Weight::from_parts(8_882_000, 1489)
+		//  Measured:  `6`
+		//  Estimated: `7615`
+		// Minimum execution time: 18_234_000 picoseconds.
+		Weight::from_parts(18_747_000, 7615)
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
