@@ -224,16 +224,16 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(2)]
-		#[pallet::weight(2)]
-		// TODO:
-		// #[pallet::weight(T::WeightInfo::create_claim())]
+		// #[pallet::weight({2})]
+		#[pallet::weight(T::WeightInfo::create_claim())]
 		pub fn create_claim(origin: OriginFor<T>, input: Vec<u8>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 
 			let claim = BoundedVec::<u8, T::ProofSizeLimit>::try_from(input.clone())
 				.map_err(|_| Error::<T>::ProofTooLarge)?;
 
-			ensure!(!Proofs::<T>::contains_key(&claim), Error::<T>::ProofAlreadyClaimed);
+				ensure!(!Proofs::<T>::contains_key(&claim), Error::<T>::ProofAlreadyClaimed);
+				ensure!(!Proofs::<T>::contains_key(&claim), Error::<T>::ProofAlreadyClaimed);
 
 			Proofs::<T>::insert(&claim, (&sender, frame_system::Pallet::<T>::block_number()));
 
@@ -243,7 +243,7 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(3)]
-		#[pallet::weight(3)]
+		#[pallet::weight({3})]
 		// TODO:
 		// #[pallet::weight(T::WeightInfo::revoke_claim())]
 		pub fn revoke_claim(origin: OriginFor<T>, input: Vec<u8>) -> DispatchResult {
@@ -266,7 +266,7 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(4)]
-		#[pallet::weight(4)]
+		#[pallet::weight({4})]
 		// TODO:
 		// #[pallet::weight(T::WeightInfo::transfer_claim())]
 		pub fn transfer_claim(origin: OriginFor<T>, input: Vec<u8>, dest: T::AccountId) -> DispatchResult {
