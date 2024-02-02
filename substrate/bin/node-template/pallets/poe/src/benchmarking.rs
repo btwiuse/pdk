@@ -42,6 +42,7 @@ mod benchmarks {
 
 	#[benchmark]
 	fn create_claim() {
+		use sp_std::vec;
 		let input = vec![100u8];
 		let caller: T::AccountId = whitelisted_caller();
 		#[extrinsic_call]

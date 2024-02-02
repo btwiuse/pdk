@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-cargo zigbuild -r --features runtime-benchmarks -p node-template --target $(uname -m)-unknown-linux-musl
-file ../../../target/$(uname -m)-unknown-linux-musl/release/node-template
-du -sh ../../../target/$(uname -m)-unknown-linux-musl/release/node-template
-realpath ../../../target/$(uname -m)-unknown-linux-musl/release/node-template

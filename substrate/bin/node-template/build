@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+cargo build -r --features runtime-benchmarks -p node-template --bin node-template
+file ../../../target/release/node-template
+du -sh ../../../target/release/node-template
+realpath ../../../target/release/node-template
