@@ -1,7 +1,9 @@
 use crate as pallet_cat;
+use frame_support::{
+	parameter_types,
+	traits::{ConstU16, ConstU64},
+};
 use pallet_insecure_randomness_collective_flip;
-use frame_support::traits::{ConstU16, ConstU64};
-use frame_support::parameter_types;
 use sp_core::H256;
 use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup},

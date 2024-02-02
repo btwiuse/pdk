@@ -21,11 +21,13 @@ use frame_support::pallet_macros::*;
 /// This can later be imported into the pallet using [`import_section`].
 #[pallet_section]
 mod events {
-    #[pallet::event]
-    #[pallet::generate_deposit(pub(super) fn deposit_event)]
-    pub enum Event<T: Config> {
-        CatCreated(T::AccountId, T::CatId, Cat),
-        CatBred(T::AccountId, T::CatId, Cat),
-        CatTransferred(T::AccountId, T::AccountId, T::CatId),
-    }
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config> {
+		CatCreated(T::AccountId, T::CatId, Cat),
+		CatBred(T::AccountId, T::CatId, Cat),
+		CatTransferred(T::AccountId, T::AccountId, T::CatId),
+		CatListed(T::AccountId, T::CatId),
+		CatBought(T::AccountId, T::CatId),
+	}
 }

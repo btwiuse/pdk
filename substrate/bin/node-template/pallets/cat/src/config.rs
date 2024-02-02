@@ -21,16 +21,37 @@ use frame_support::pallet_macros::*;
 /// This can later be imported into the pallet using [`import_section`].
 #[pallet_section]
 mod config {
-	use frame_support::traits::Randomness;
-	use sp_runtime::traits::One;
-	use sp_runtime::traits::CheckedAdd;
+	use frame_support::{
+		traits::{Currency, ExistenceRequirement, Randomness},
+		PalletId,
+	};
+	use sp_runtime::traits::{CheckedAdd, One};
+
+	pub type BalanceOf<T> =
+		<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+
 	/// Configure the pallet by specifying the parameters and types on which it depends.
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
 		/// The overarching runtime event type.
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
-		type CatId: sp_runtime::traits::AtLeast32BitUnsigned + codec::EncodeLike + Clone + Copy + Decode + scale_info::prelude::fmt::Debug + Default + Eq + PartialEq + TypeInfo + MaxEncodedLen + One;
+		type CatId: sp_runtime::traits::AtLeast32BitUnsigned
+			+ codec::EncodeLike
+			+ Clone
+			+ Copy
+			+ Decode
+			+ scale_info::prelude::fmt::Debug
+			+ Default
+			+ Eq
+			+ PartialEq
+			+ TypeInfo
+			+ MaxEncodedLen
+			+ One;
 		type Randomness: Randomness<Self::Hash, BlockNumberFor<Self>>;
 		type WeightInfo: WeightInfo;
+		type Currency: Currency<Self::AccountId>;
+		#[pallet::constant]
+		type CatPrice: Get<BalanceOf<Self>>;
+		type PalletId: Get<PalletId>;
 	}
 }

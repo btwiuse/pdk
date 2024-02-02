@@ -22,10 +22,13 @@ use frame_support::pallet_macros::*;
 #[pallet_section]
 mod errors {
 	// Errors inform users that something went wrong.
-    #[pallet::error]
-    pub enum Error<T> {
-        InvalidCatId,
-        SameCatId,
-        NotCatOwner,
-    }
+	#[pallet::error]
+	pub enum Error<T> {
+		InvalidCatId,
+		SameCatId,
+		NotCatOwner,
+		AlreadyListed,
+		AlreadyOwned,
+		NotListed,
+	}
 }
