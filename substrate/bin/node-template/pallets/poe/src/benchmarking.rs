@@ -19,7 +19,8 @@ fn assert_last_event<T: Config>(generic_event: <T as Config>::RuntimeEvent) {
 #[benchmarks]
 mod benchmarks {
 	use super::*;
-	use sp_std::vec;
+	use frame_support::traits::Get;
+	use frame_support::sp_runtime::BoundedVec;
 
 	#[benchmark]
 	fn do_something() {
@@ -42,31 +43,44 @@ mod benchmarks {
 	}
 
 	#[benchmark]
-	fn create_claim() {
-		let input = vec![100u8];
+	fn create_claim(p: Linear<1, { T::ProofSizeLimit::get() }>) {
+		let input = (0..p).map(|a| a as u8).collect::<Vec<_>>();
 		let caller: T::AccountId = whitelisted_caller();
+
 		#[extrinsic_call]
 		create_claim(RawOrigin::Signed(caller.clone()), input.clone());
 
 		assert_last_event::<T>(Event::<T>::ClaimCreated(caller, input).into());
 	}
+
 	#[benchmark]
-	fn revoke_claim() {
-		let input = vec![100u8];
+	fn revoke_claim(p: Linear<1, { T::ProofSizeLimit::get() }>) {
+		let input = (0..p).map(|a| a as u8).collect::<Vec<_>>();
 		let caller: T::AccountId = whitelisted_caller();
-		#[extrinsic_call]
-		create_claim(RawOrigin::Signed(caller.clone()), input.clone());
+		let claim = BoundedVec::<u8, T::ProofSizeLimit>::try_from(input.clone())
+		.map_err(|_| Error::<T>::ProofTooLarge).unwrap();
+		Proofs::<T>::insert(&claim, (&caller, frame_system::Pallet::<T>::block_number()));
 
-		assert_last_event::<T>(Event::<T>::ClaimCreated(caller, input).into());
+		#[extrinsic_call]
+		revoke_claim(RawOrigin::Signed(caller.clone()), input.clone());
+
+		assert_last_event::<T>(Event::<T>::ClaimRevoked(caller, input).into());
 	}
+
 	#[benchmark]
-	fn transfer_claim() {
-		let input = vec![100u8];
+	fn transfer_claim(p: Linear<1, { T::ProofSizeLimit::get() }>) {
+		let input = (0..p).map(|a| a as u8).collect::<Vec<_>>();
 		let caller: T::AccountId = whitelisted_caller();
-		#[extrinsic_call]
-		create_claim(RawOrigin::Signed(caller.clone()), input.clone());
+		let recver: T::AccountId = account("other", 0, 42);
+		let claim = BoundedVec::<u8, T::ProofSizeLimit>::try_from(input.clone())
+		.map_err(|_| Error::<T>::ProofTooLarge).unwrap();
+		Proofs::<T>::insert(&claim, (&caller, frame_system::Pallet::<T>::block_number()));
 
-		assert_last_event::<T>(Event::<T>::ClaimCreated(caller, input).into());
+		#[extrinsic_call]
+		transfer_claim(RawOrigin::Signed(caller.clone()), input.clone(), recver.clone());
+
+		assert_last_event::<T>(Event::<T>::ClaimTransferred(caller, input, recver).into());
 	}
+
 	impl_benchmark_test_suite!(PoeModule, crate::mock::new_test_ext(), crate::mock::Test);
 }
