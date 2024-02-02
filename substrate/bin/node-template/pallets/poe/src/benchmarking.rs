@@ -6,6 +6,15 @@ use super::*;
 use crate::Pallet as Template;
 use frame_benchmarking::v2::*;
 use frame_system::RawOrigin;
+use frame_system::EventRecord;
+
+fn assert_last_event<T: Config>(generic_event: <T as Config>::RuntimeEvent) {
+	let events = frame_system::Pallet::<T>::events();
+	let system_event: <T as frame_system::Config>::RuntimeEvent = generic_event.into();
+	// compare to the last event record
+	let EventRecord { event, .. } = &events[events.len() - 1];
+	assert_eq!(event, &system_event);
+}
 
 #[benchmarks]
 mod benchmarks {
@@ -31,5 +40,15 @@ mod benchmarks {
 		assert_eq!(Something::<T>::get(), Some(101u32));
 	}
 
-	impl_benchmark_test_suite!(Template, crate::mock::new_test_ext(), crate::mock::Test);
+	#[benchmark]
+	fn create_claim() {
+		let input = vec![100u8];
+		let caller: T::AccountId = whitelisted_caller();
+		#[extrinsic_call]
+		create_claim(RawOrigin::Signed(caller.clone()), input.clone());
+
+		assert_last_event::<T>(Event::<T>::ClaimCreated(caller, input).into());
+	}
+
+	impl_benchmark_test_suite!(PoeModule, crate::mock::new_test_ext(), crate::mock::Test);
 }

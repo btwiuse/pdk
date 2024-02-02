@@ -5,7 +5,7 @@
 //! DATE: 2024-02-02, STEPS: `20`, REPEAT: `50`, LOW RANGE: `[]`, HIGH RANGE: `[]`
 //! WORST CASE MAP SIZE: `1000000`
 //! HOSTNAME: `bk-docker-gdxt`, CPU: `Intel(R) Xeon(R) CPU @ 3.10GHz`
-//! WASM-EXECUTION: `Compiled`, CHAIN: `None`, DB CACHE: 1024
+//! WASM-EXECUTION: `Compiled`, CHAIN: `None`, DB CACHE: `1024`
 
 // Executed Command:
 // ../../../target/x86_64-unknown-linux-musl/release/node-template
@@ -22,28 +22,35 @@
 // 50
 // --output
 // ./pallets/poe/src/weights.rs
+// --template
+// ../../.maintain/frame-weight-template.hbs
 
 #![cfg_attr(rustfmt, rustfmt_skip)]
 #![allow(unused_parens)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
 
-use frame_support::{traits::Get, weights::Weight};
+use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use core::marker::PhantomData;
 
-/// Weight functions for `pallet_poe`.
-pub struct WeightInfo<T>(PhantomData<T>);
-impl<T: frame_system::Config> pallet_poe::WeightInfo for WeightInfo<T> {
+/// Weight functions needed for `pallet_poe`.
+pub trait WeightInfo {
+	fn do_something() -> Weight;
+	fn cause_error() -> Weight;
+}
+
+/// Weights for `pallet_poe` using the Substrate node and recommended hardware.
+pub struct SubstrateWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 	/// Storage: `Poe::Something` (r:0 w:1)
 	/// Proof: `Poe::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
 	fn do_something() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`
-		// Minimum execution time: 10_062_000 picoseconds.
-		Weight::from_parts(10_491_000, 0)
-			.saturating_add(Weight::from_parts(0, 0))
-			.saturating_add(T::DbWeight::get().writes(1))
+		// Minimum execution time: 10_014_000 picoseconds.
+		Weight::from_parts(10_560_000, 0)
+			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}
 	/// Storage: `Poe::Something` (r:1 w:1)
 	/// Proof: `Poe::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
@@ -51,10 +58,34 @@ impl<T: frame_system::Config> pallet_poe::WeightInfo for WeightInfo<T> {
 		// Proof Size summary in bytes:
 		//  Measured:  `32`
 		//  Estimated: `1489`
-		// Minimum execution time: 8_434_000 picoseconds.
-		Weight::from_parts(8_791_000, 0)
-			.saturating_add(Weight::from_parts(0, 1489))
-			.saturating_add(T::DbWeight::get().reads(1))
-			.saturating_add(T::DbWeight::get().writes(1))
+		// Minimum execution time: 8_471_000 picoseconds.
+		Weight::from_parts(8_882_000, 1489)
+			.saturating_add(T::DbWeight::get().reads(1_u64))
+			.saturating_add(T::DbWeight::get().writes(1_u64))
+	}
+}
+
+// For backwards compatibility and tests.
+impl WeightInfo for () {
+	/// Storage: `Poe::Something` (r:0 w:1)
+	/// Proof: `Poe::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
+	fn do_something() -> Weight {
+		// Proof Size summary in bytes:
+		//  Measured:  `0`
+		//  Estimated: `0`
+		// Minimum execution time: 10_014_000 picoseconds.
+		Weight::from_parts(10_560_000, 0)
+			.saturating_add(RocksDbWeight::get().writes(1_u64))
+	}
+	/// Storage: `Poe::Something` (r:1 w:1)
+	/// Proof: `Poe::Something` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
+	fn cause_error() -> Weight {
+		// Proof Size summary in bytes:
+		//  Measured:  `32`
+		//  Estimated: `1489`
+		// Minimum execution time: 8_471_000 picoseconds.
+		Weight::from_parts(8_882_000, 1489)
+			.saturating_add(RocksDbWeight::get().reads(1_u64))
+			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
 }

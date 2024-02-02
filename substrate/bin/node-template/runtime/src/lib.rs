@@ -278,7 +278,7 @@ construct_runtime!(
 		Sudo: pallet_sudo,
 		// Include the custom logic from the pallet-template in the runtime.
 		TemplateModule: pallet_template,
-		Poe: pallet_poe,
+		PoeModule: pallet_poe,
 	}
 );
 
@@ -330,7 +330,7 @@ mod benches {
 		[pallet_timestamp, Timestamp]
 		[pallet_sudo, Sudo]
 		[pallet_template, TemplateModule]
-		[pallet_poe, Poe]
+		[pallet_poe, PoeModule]
 	);
 }
 
