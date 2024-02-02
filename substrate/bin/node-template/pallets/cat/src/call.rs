@@ -31,7 +31,7 @@ mod call {
 		pub fn create_cat(origin: OriginFor<T>) -> DispatchResult {
 			let owner = ensure_signed(origin)?;
 			let cat_id = Self::get_next_cat_id()?;
-			let cat = Cat(Self::random_cat_value(&owner));
+			let cat = Cat{dna:Self::random_cat_value(&owner), ..Cat::default() };
 
 			let price = T::CatPrice::get();
 			// T::Currency::reserve(&owner, price)?;
@@ -66,8 +66,8 @@ mod call {
 
 			let mut cat = Cat::default();
 			let selector = Self::random_cat_value(&owner);
-			for (i, (gene_1, gene_2)) in cat_1.0.iter().zip(cat_2.0.iter()).enumerate() {
-				cat.0[i] = (selector[i] & gene_1) | (!selector[i] & gene_2);
+			for (i, (gene_1, gene_2)) in cat_1.dna.iter().zip(cat_2.dna.iter()).enumerate() {
+				cat.dna[i] = (selector[i] & gene_1) | (!selector[i] & gene_2);
 			}
 
 			let price = T::CatPrice::get();

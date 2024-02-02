@@ -21,6 +21,8 @@ pub use weights::*;
 use frame_support::pallet_macros::*;
 pub use pallet::*;
 
+mod migrations;
+
 #[import_section(config::config)]
 #[import_section(events::events)]
 #[import_section(errors::errors)]
@@ -34,10 +36,16 @@ pub mod pallet {
 	#[derive(
 		Encode, Decode, Clone, Copy, RuntimeDebug, PartialEq, Eq, Default, TypeInfo, MaxEncodedLen,
 	)]
-	pub struct Cat(pub [u8; 16]);
-
+	pub struct Cat {
+		pub dna: [u8; 16],
+		pub name: [u8; 8],
+	}
+	
 	#[pallet::pallet]
+	#[pallet::storage_version(STORAGE_VERSION)]
 	pub struct Pallet<T>(_);
+
+	const STORAGE_VERSION: StorageVersion = StorageVersion::new(1);
 
 	#[pallet::storage]
 	#[pallet::getter(fn next_cat_id)]
@@ -59,4 +67,12 @@ pub mod pallet {
 	#[pallet::storage]
 	#[pallet::getter(fn cat_listing)]
 	pub type CatListing<T: Config> = StorageMap<_, Blake2_128Concat, T::CatId, (), OptionQuery>;
+
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
+		fn on_runtime_upgrade() -> Weight {
+			//migrations::v1::migrate::<T>()
+			migrations::v2::migrate::<T>()
+		}
+	}
 }
