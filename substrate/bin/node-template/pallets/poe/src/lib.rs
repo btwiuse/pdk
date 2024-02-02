@@ -224,8 +224,7 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(2)]
-		#[pallet::weight({2})]
-		// #[pallet::weight(T::WeightInfo::create_claim())]
+		#[pallet::weight(T::WeightInfo::create_claim())]
 		pub fn create_claim(origin: OriginFor<T>, input: Vec<u8>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 
@@ -243,9 +242,7 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(3)]
-		#[pallet::weight({3})]
-		// TODO:
-		// #[pallet::weight(T::WeightInfo::revoke_claim())]
+		#[pallet::weight(T::WeightInfo::revoke_claim())]
 		pub fn revoke_claim(origin: OriginFor<T>, input: Vec<u8>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 
@@ -266,9 +263,7 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(4)]
-		#[pallet::weight({4})]
-		// TODO:
-		// #[pallet::weight(T::WeightInfo::transfer_claim())]
+		#[pallet::weight(T::WeightInfo::transfer_claim())]
 		pub fn transfer_claim(origin: OriginFor<T>, input: Vec<u8>, dest: T::AccountId) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 
