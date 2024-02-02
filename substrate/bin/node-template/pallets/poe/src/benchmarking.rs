@@ -51,5 +51,27 @@ mod benchmarks {
 		assert_last_event::<T>(Event::<T>::ClaimCreated(caller, input).into());
 	}
 
+	#[benchmark]
+	fn revoke_claim() {
+		use sp_std::vec;
+		let input = vec![100u8];
+		let caller: T::AccountId = whitelisted_caller();
+		#[extrinsic_call]
+		create_claim(RawOrigin::Signed(caller.clone()), input.clone());
+
+		assert_last_event::<T>(Event::<T>::ClaimCreated(caller, input).into());
+	}
+
+	#[benchmark]
+	fn transfer_claim() {
+		use sp_std::vec;
+		let input = vec![100u8];
+		let caller: T::AccountId = whitelisted_caller();
+		#[extrinsic_call]
+		create_claim(RawOrigin::Signed(caller.clone()), input.clone());
+
+		assert_last_event::<T>(Event::<T>::ClaimCreated(caller, input).into());
+	}
+
 	impl_benchmark_test_suite!(PoeModule, crate::mock::new_test_ext(), crate::mock::Test);
 }
