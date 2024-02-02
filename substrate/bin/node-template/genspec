@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-template=../../../target/release/node-template
+template=../../../target/$(uname -m)-unknown-linux-musl/release/node-template
 
 $template build-spec > myCustomSpec.json
 $template build-spec --chain=myCustomSpec.json --raw > customSpecRaw.json

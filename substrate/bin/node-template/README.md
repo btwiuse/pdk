@@ -85,3 +85,9 @@ $ ./bench
 2024-02-02 19:05:22 Starting benchmark: pallet_poe::create_claim    
 2024-02-02 19:05:22 Starting benchmark: pallet_poe::revoke_claim
 ```
+
+```
+$ ./genspec 
+2024-02-02 19:18:30 Building chain spec    
+2024-02-02 19:18:30 Building chain spec
+```
