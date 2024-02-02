@@ -1,9 +1,9 @@
 use crate::{mock::*, Error, Event, *};
 use frame_support::{assert_noop, assert_ok};
-use frame_support::traits::fungible::Mutate;
 
 const ACCOUNT_BALANCE: u128 = 100000;
 const PALLET_BALANCE: u128 = 0;
+const CAT_NAME: [u8; 8] = *b"test0000";
 
 #[test]
 fn test_create() {
@@ -93,4 +93,91 @@ fn test_transfer() {
 		assert_eq!(CatModule::cat_owner(cat_id), Some(account_id));
 		System::assert_last_event(Event::CatTransferred(recipient, account_id, cat_id).into());
 	})
+}
+
+#[test]
+fn it_works_for_list() {
+	new_test_ext::<Test>().execute_with(|| {
+		use sp_runtime::traits::AccountIdConversion;
+		use frame_support::PalletId;
+		let CatPalletAccount: u64 = PalletId(*b"py/meoww").into_account_truncating();
+
+		let account_id = 1;
+		let account_id2 = 2;
+		let cat_id = 0;
+		
+		assert_ok!(Balances::force_set_balance(RuntimeOrigin::root(), account_id, ACCOUNT_BALANCE));
+		assert_ok!(Balances::force_set_balance(RuntimeOrigin::root(), account_id2, ACCOUNT_BALANCE));
+
+		// 当不存在 kitty 时失败
+		assert_noop!(
+			CatModule::list(RuntimeOrigin::signed(account_id), cat_id),
+			Error::<Test>::InvalidCatId
+		);
+
+		assert_ok!(CatModule::create_cat(RuntimeOrigin::signed(account_id) /*, CAT_NAME */));
+		assert_eq!(Balances::free_balance(account_id), ACCOUNT_BALANCE - EXISTENTIAL_DEPOSIT * 10);
+		assert_eq!(
+			Balances::free_balance(&CatPalletAccount),
+			PALLET_BALANCE + EXISTENTIAL_DEPOSIT * 10
+		);
+		// 当所有者不正确时失败
+		assert_noop!(
+			CatModule::list(RuntimeOrigin::signed(account_id2), cat_id),
+			Error::<Test>::NotCatOwner
+		);
+
+		// 所有者正确，成功
+		assert_ok!(CatModule::list(RuntimeOrigin::signed(account_id), cat_id));
+		assert!(CatModule::cat_listing(cat_id).is_some());
+		System::assert_last_event(Event::CatListed ( account_id, 0 ).into());
+
+		// 重复 sale, 失败
+		assert_noop!(
+			CatModule::list(RuntimeOrigin::signed(account_id), cat_id),
+			Error::<Test>::AlreadyListed
+		);
+	});
+}
+
+#[test]
+fn it_works_for_buy() {
+	new_test_ext::<Test>().execute_with(|| {
+
+		let account_id = 1;
+		let account_id2 = 2;
+		let cat_id = 0;
+		assert_ok!(Balances::force_set_balance(RuntimeOrigin::root(), account_id, ACCOUNT_BALANCE));
+		assert_ok!(Balances::force_set_balance(RuntimeOrigin::root(), account_id2, ACCOUNT_BALANCE));
+
+		// 当不存在 kitty 时失败
+		assert_noop!(
+			CatModule::buy(RuntimeOrigin::signed(account_id), cat_id),
+			Error::<Test>::InvalidCatId
+		);
+
+		assert_ok!(CatModule::create_cat(RuntimeOrigin::signed(account_id)/* , CAT_NAME */ ));
+		assert_eq!(Balances::free_balance(account_id), ACCOUNT_BALANCE - EXISTENTIAL_DEPOSIT * 10);
+
+		// 当购买者与所有者相同时失败
+		assert_noop!(
+			CatModule::buy(RuntimeOrigin::signed(account_id), cat_id),
+			Error::<Test>::AlreadyOwned
+		);
+
+		// 当没有上架时，失败
+		assert_noop!(
+			CatModule::buy(RuntimeOrigin::signed(account_id2), cat_id),
+			Error::<Test>::NotListed
+		);
+
+		// 上述失败条件不存在时，成功
+		assert_ok!(CatModule::list(RuntimeOrigin::signed(account_id), cat_id));
+		assert_ok!(CatModule::buy(RuntimeOrigin::signed(account_id2), cat_id));
+		assert!(CatModule::cat_listing(cat_id).is_none());
+		assert_eq!(CatModule::cat_owner(cat_id), Some(account_id2));
+		assert_eq!(Balances::free_balance(account_id), ACCOUNT_BALANCE);
+		assert_eq!(Balances::free_balance(account_id2), ACCOUNT_BALANCE - EXISTENTIAL_DEPOSIT * 10);
+		System::assert_last_event(Event::CatBought (account_id2, 0 ).into());
+	});
 }

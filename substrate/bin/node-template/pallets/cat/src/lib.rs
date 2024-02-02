@@ -57,6 +57,6 @@ pub mod pallet {
 		StorageMap<_, Blake2_128Concat, T::CatId, (T::CatId, T::CatId)>;
 
 	#[pallet::storage]
-	#[pallet::getter(fn kitty_on_sale)]
+	#[pallet::getter(fn cat_listing)]
 	pub type CatListing<T: Config> = StorageMap<_, Blake2_128Concat, T::CatId, (), OptionQuery>;
 }
