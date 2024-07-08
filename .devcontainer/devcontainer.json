@@ -1,0 +1,5 @@
+{
+  "image": "btwiuse/arch:rust-nightly",
+  "features": {
+  }
+}
