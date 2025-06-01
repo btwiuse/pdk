@@ -1,0 +1,71 @@
+name: Rebase onto Upstream
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # ⏰ Every hour
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout your forked master branch
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0  # Needed to rebase properly
+
+      - name: Set Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/paritytech/polkadot-sdk.git
+          git fetch upstream
+
+      - name: Create backup branch (in case of conflict)
+        run: |
+          git branch backup-master-before-rebase
+
+      - name: Attempt rebase onto upstream/master
+        id: rebase
+        run: |
+          if git rebase upstream/master; then
+            echo "Rebase successful"
+          else
+            echo "Rebase conflict, aborting..."
+            git rebase --abort
+            git reset --hard backup-master-before-rebase
+            echo "REBASE_FAILED=true" >> $GITHUB_ENV
+          fi
+
+      - name: Check if HEAD is updated after rebase
+        id: head_check
+        run: |
+          CURRENT_HEAD=$(git rev-parse HEAD)
+          git fetch origin master
+          REMOTE_HEAD=$(git rev-parse origin/master)
+          if [ "$CURRENT_HEAD" != "$REMOTE_HEAD" ]; then
+            echo "HEAD_UPDATED=true" >> $GITHUB_ENV
+          else
+            echo "HEAD_UPDATED=false" >> $GITHUB_ENV
+          fi
+
+      - name: Push changes if rebase was successful
+        if: env.REBASE_FAILED != 'true'
+        run: |
+          git push origin master --force
+
+      - name: Cleanup backup branch
+        if: always()
+        run: |
+          git branch -D backup-master-before-rebase || true
